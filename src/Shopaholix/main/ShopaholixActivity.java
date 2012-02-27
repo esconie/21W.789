@@ -16,7 +16,6 @@ public class ShopaholixActivity extends Activity {
     }
     public void myButtonPressed(View v){
     	TextView t = (TextView)this.findViewById(R.id.textView1);
-    	t.setText("Goodbye 21w.780");
+    	t.setText("Goodbye 21w.789");
     }
 }
-
