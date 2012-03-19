@@ -16,6 +16,6 @@ public class ShopaholixActivity extends Activity {
     }
     public void myButtonPressed(View v){
     	TextView t = (TextView)this.findViewById(R.id.textView1);
-    	t.setText("Testing commit");
+    	t.setText("Testing commitqewrger re");
     }
 }
