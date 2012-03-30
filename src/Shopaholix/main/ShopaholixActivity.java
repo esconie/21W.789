@@ -3,7 +3,6 @@ package Shopaholix.main;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 import android.widget.TextView;
 
 public class ShopaholixActivity extends Activity {

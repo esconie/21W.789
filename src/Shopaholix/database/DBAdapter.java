@@ -10,22 +10,31 @@ import android.util.Log;
 public class DBAdapter
 {
 //	public static final String KEY_ROWID = "_id";
-	public static final String KEY_PRODNAME = "productName";
+	public static final String KEY_PRODNAME = "prodName";
 	public static final String KEY_UPC = "UPC";
 	public static final String KEY_RATING = "rating";
+	public static final String KEY_RATING_PERSONAL = "ratingPersonal";
 	
 	private static final String TAG = "DBAdapter";
-	private static final String DATABASE_NAME = "personal";
-	private static final String DATABASE_TABLE = "prefs";
+	private static final String DATABASE_NAME = "Items";
+	private static final String DATABASE_TABLE = "Items";
 	private static final int DATABASE_VERSION = 1;
-	private static final String DATABASE_CREATE =
-			"create table prefs (_id int primary key autoincrement, "
+	private static final String DATABASE_CREATE_1 =
+			"create table items ("
 					+ "prodName text not null, " 
 					+ "UPC integer, "
-					+ "rating int);"; //TODO: decide on how rating is going to work
+					+ "ratingPersonal int);"; 
+	private static final String DATABASE_CREATE_2 =
+			"create table tags ("
+					+ "tagName text not null, " 
+					+ "ratingPersonal int);";
 	private final Context context;
 	private DatabaseHelper DBHelper;
 	private SQLiteDatabase db;
+	
+	public enum Rating{
+		GOOD, BAD, NEUTRAL, UNRATED
+	}
 	
 	public DBAdapter(Context ctx) {
 		this.context = ctx;
@@ -40,7 +49,8 @@ public class DBAdapter
 		
 		@Override
 		public void onCreate(SQLiteDatabase db){
-			db.execSQL(DATABASE_CREATE);
+			db.execSQL(DATABASE_CREATE_1);
+			db.execSQL(DATABASE_CREATE_2);
 		}
 		
 		@Override
@@ -49,7 +59,8 @@ public class DBAdapter
 			Log.w(TAG, "Upgrading database from version " + oldVersion
 					+ " to "
 					+ newVersion + ", which will destroy all old data");
-			db.execSQL("DROP TABLE IF EXISTS prefs");
+			db.execSQL("DROP TABLE IF EXISTS tags");
+			db.execSQL("DROP TABLE IF EXISTS items");
 			onCreate(db);
 		}
 	}
@@ -66,13 +77,26 @@ public class DBAdapter
 		DBHelper.close();
 	}
 	//---insert an item into the database---
-	public long insertItem(String prodName, int UPC, int rating)
+	public long insertItem(String prodName, int UPC)
 	{
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_PRODNAME, prodName);
 		initialValues.put(KEY_UPC, UPC);
-		initialValues.put(KEY_RATING, rating);
 		return db.insert(DATABASE_TABLE, null, initialValues);
+	}
+	//---updates personal item rating---
+	public boolean updateItemRating(int UPC, Rating rating){
+		ContentValues args = new ContentValues();
+		args.put(KEY_RATING_PERSONAL, rating.ordinal());
+		return db.update(DATABASE_TABLE, args,
+				KEY_UPC + "=" + UPC, null) > 0;
+	}
+	//---updates family member's rating of item---
+	public boolean updateItemFamilyRating(int UPC, String name, Rating rating){
+		ContentValues args = new ContentValues();
+		args.put(KEY_RATING + name, rating.ordinal());
+		return db.update(DATABASE_TABLE, args,
+				KEY_UPC + "=" + UPC, null) > 0;
 	}
 	//---deletes a particular item by UPC---
 	public boolean deleteTitle(int UPC)
@@ -83,11 +107,7 @@ public class DBAdapter
 	//---retrieves all the items---
 	public Cursor getAllItems()
 	{
-		return db.query(DATABASE_TABLE, new String[] {
-//				KEY_ROWID,
-				KEY_PRODNAME,
-				KEY_UPC,
-				KEY_RATING},
+		return db.query(DATABASE_TABLE, null,
 				null,
 				null,
 				null,
@@ -98,12 +118,8 @@ public class DBAdapter
 	public Cursor getTitle(int UPC) throws SQLException
 	{
 		Cursor mCursor =
-				db.query(true, DATABASE_TABLE, new String[] {
-//					KEY_ROWID,
-					KEY_PRODNAME,
-					KEY_UPC,
-					KEY_RATING},
-				KEY_UPC + "=" + UPC, //orig was KEY_ROWID = rowId
+				db.query(true, DATABASE_TABLE, null,
+				KEY_UPC + "=" + UPC, 
 				null,
 				null,
 				null,
@@ -114,13 +130,19 @@ public class DBAdapter
 		}
 		return mCursor;
 	}
-	//---updates an item---
-	public boolean updateItem(String prodName, int UPC, int rating){
-		ContentValues args = new ContentValues();
-		args.put(KEY_PRODNAME, prodName);
-		args.put(KEY_UPC, UPC);
-		args.put(KEY_RATING, rating);
-		return db.update(DATABASE_TABLE, args,
-				KEY_UPC + "=" + UPC, null) > 0;
-	}
+	
+	/**Family functionality
+	 * 
+	 */
+	//---deletes a particular family member column---
+	public void deleteFamily(String famName)
+		{
+			db.execSQL("ALTER TABLE " + DATABASE_TABLE + " DROP COLUMN rating" + famName);
+		}
+	
+	//---add a particular family member column---
+	public void addFamily(String famName)
+		{
+			db.execSQL("ALTER TABLE " + DATABASE_TABLE + " ADD rating" + famName + "double NOT NULL DEFAULT(0.0)");
+		}
 }
