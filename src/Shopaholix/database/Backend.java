@@ -21,7 +21,7 @@ public class Backend {
 			int score = scoreItem(item);
 			bestItems.add(new Tuple<Item,Integer>(item, score));
 		}
-		ArrayList<Item> suggestedItems;
+		ArrayList<Item> suggestedItems = new ArrayList<Item>();
 		while (numberOfResults > 0 && !bestItems.isEmpty()) {
 			suggestedItems.add(bestItems.poll().a);
 		}
@@ -59,7 +59,7 @@ public class Backend {
 			int score = scoreTag(tag, tags, items);
 			bestTags.add(new Tuple<Tag,Integer>(tag, score));
 		}
-		ArrayList<Tag> suggestedTags;
+		ArrayList<Tag> suggestedTags = new ArrayList<Tag>();
 		while (numberOfResults > 0 && !bestTags.isEmpty()) {
 			suggestedTags.add(bestTags.poll().a);
 		}
@@ -128,7 +128,7 @@ public class Backend {
 	public void removeFamilyMember(User user) {
 		db.removeFamilyMember(user);
 	}
-	public ArrayList<Users> getFamilyMembers(){
+	public ArrayList<User> getFamilyMembers(){
 		return db.getUsers();
 	}
 
