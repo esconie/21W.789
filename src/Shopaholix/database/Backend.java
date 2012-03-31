@@ -19,7 +19,7 @@ public class Backend {
 		PriorityQueue<Tuple<Item, Integer>> bestItems = new PriorityQueue<>();
 		for (Item item : items) {
 			int score = scoreItem(item);
-			bestItems.add(new Tuple(item, score));
+			bestItems.add(new Tuple<Item,Integer>(item, score));
 		}
 		ArrayList<Item> suggestedItems;
 		while (numberOfResults > 0 && !bestItems.isEmpty()) {
@@ -56,7 +56,7 @@ public class Backend {
 		PriorityQueue<Tuple<Tag, Integer>> bestTags = new PriorityQueue<>();
 		for (Tag tag : allTags) {
 			int score = scoreTag(tag, tags, items);
-			bestTags.add(new Tuple(tag, score));
+			bestTags.add(new Tuple<Tag,Integer>(tag, score));
 		}
 		ArrayList<Tag> suggestedTags;
 		while (numberOfResults > 0 && !bestTags.isEmpty()) {
@@ -126,6 +126,9 @@ public class Backend {
 
 	public void removeFamilyMember(User user) {
 		db.removeFamilyMember(user);
+	}
+	public ArrayList<Users> getFamilyMembers(){
+		return db.getUsers();
 	}
 
 	public class Tuple<A, B extends Comparable<B>> implements
