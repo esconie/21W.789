@@ -16,7 +16,7 @@ public class Backend {
 	private ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags,
 			int numberOfResults) {
 		ArrayList<Item> items = db.getAllItems();
-		PriorityQueue<Tuple<Item, Integer>> bestItems = new PriorityQueue<>();
+		PriorityQueue<Tuple<Item, Integer>> bestItems = new PriorityQueue<Tuple<Item, Integer>>();
 		for (Item item : items) {
 			int score = scoreItem(item);
 			bestItems.add(new Tuple<Item,Integer>(item, score));
@@ -42,6 +42,7 @@ public class Backend {
 				score += weight;
 			}
 		}
+		return score;
 
 	}
 
@@ -53,7 +54,7 @@ public class Backend {
 			int numberOfResults) {
 		ArrayList<Tag> allTags = db.getAllTags();
 		ArrayList<Item> items = db.getAllItems();
-		PriorityQueue<Tuple<Tag, Integer>> bestTags = new PriorityQueue<>();
+		PriorityQueue<Tuple<Tag, Integer>> bestTags = new PriorityQueue<Tuple<Tag, Integer>>();
 		for (Tag tag : allTags) {
 			int score = scoreTag(tag, tags, items);
 			bestTags.add(new Tuple<Tag,Integer>(tag, score));
@@ -67,9 +68,9 @@ public class Backend {
 
 	private int scoreTag(Tag tag, ArrayList<Tag> tags, ArrayList<Item> items) {
 		ArrayList<User> users = db.getUsers();
-		HashMap<User, HashMap<Rating, Integer>> aggregate = new HashMap<>();
+		HashMap<User, HashMap<Rating, Integer>> aggregate = new HashMap<User, HashMap<Rating, Integer>>();
 		for (User user : users) {
-			HashMap<Rating, Integer> temp = new HashMap<>();
+			HashMap<Rating, Integer> temp = new HashMap<Rating, Integer>();
 			for (Rating rating : Rating.values()) {
 				temp.put(rating, 0);
 			}
