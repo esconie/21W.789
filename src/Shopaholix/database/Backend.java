@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
+import android.content.Context;
+
 import Shopaholix.database.ItemRatings.Rating;
 
 public class Backend {
 	private DBAdapter db;
 
+	public Backend(Context context){
+		db=new DBAdapter(context);
+		db.open();
+	}
 	public ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags) {
 		return getSuggestedItems(tags, 10);
 	}
@@ -120,6 +126,12 @@ public class Backend {
 			return item;
 		}
 	}
+	public void rateItem(long UPC,Rating rating){
+		db.updateItemRating(UPC, rating);
+	}
+	public void rateFamilyItem(long UPC,String name, Rating rating){
+		db.updateItemFamilyRating(UPC, name, rating);
+	}
 
 	public void addFamilyMember(User user) {
 		db.addFamilyMember(user);
@@ -142,7 +154,6 @@ public class Backend {
 			this.b = b;
 		}
 
-		@Override
 		public int compareTo(Tuple<A, B> arg0) {
 			return b.compareTo(arg0.b);
 		}
