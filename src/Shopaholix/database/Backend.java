@@ -1,6 +1,7 @@
 package Shopaholix.database;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.PriorityQueue;
 
 import Shopaholix.database.ItemRatings.Rating;
@@ -65,41 +66,65 @@ public class Backend {
 	}
 
 	private int scoreTag(Tag tag, ArrayList<Tag> tags, ArrayList<Item> items) {
-		int score = 0;
+		ArrayList<User> users = db.getUsers();
+		HashMap<User, HashMap<Rating, Integer>> aggregate = new HashMap<>();
+		for (User user : users) {
+			HashMap<Rating, Integer> temp = new HashMap<>();
+			for (Rating rating : Rating.values()) {
+				temp.put(rating, 0);
+			}
+			aggregate.put(user, temp);
+		}
 		for (Item item : items) {
 			if (item.satisfies(tags, tag)) {
 				for (User user : item.ratings.keySet()) {
-					int weight = 1;
-					if (user.equals(me)) {
-						weight = 5;
-					}
+					HashMap<Rating, Integer> temp = aggregate.get(user);
 					Rating rating = item.ratings.get(user);
-					if (rating == Rating.BAD) {
-						score -= weight;
-					} else if (rating == Rating.GOOD) {
-						score += weight;
-					}
+					temp.put(rating, temp.get(rating));
 				}
 			}
 		}
-		
-		tag.ratings=new TagRatings();//change this later
+		int score=0;
+		TagRatings tagRating = new TagRatings();
+		for (User user : users) {
+			int weight = 1;
+			if (user.equals(db.getMe())) {
+				weight = 5;
+			}
+			HashMap<Rating, Integer> temp = aggregate.get(user);
+			int numberOfRatings = temp.get(Rating.GOOD)
+					+ temp.get(Rating.NEUTRAL) + temp.get(Rating.BAD);
+			if (temp.get(Rating.GOOD) / numberOfRatings > .5) {
+				tagRating.put(user, Rating.GOOD);
+			} else if (temp.get(Rating.BAD) / numberOfRatings > .5) {
+				tagRating.put(user, Rating.BAD);
+			} else if (numberOfRatings == 0) {
+				tagRating.put(user, Rating.UNRATED);
+			} else {
+				tagRating.put(user, Rating.NEUTRAL);
+			}
+			score+=weight*temp.get(Rating.GOOD)-weight*temp.get(Rating.BAD);
+		}
+
+		tag.ratings = tagRating;
 		return score;
 	}
 
 	public Item getItem(long upc) {
-		if(db.contains(upc))
+		if (db.contains(upc))
 			return db.getItem(upc);
-		else{
-			Item item=UPCDatabase.lookupByUPC(upc);
+		else {
+			Item item = UPCDatabase.lookupByUPC(upc);
 			db.putItem(item);
 			return item;
 		}
 	}
-	public void addFamilyMember(User user){
+
+	public void addFamilyMember(User user) {
 		db.addFamilyMember(user);
 	}
-	public void removeFamilyMember(User user){
+
+	public void removeFamilyMember(User user) {
 		db.removeFamilyMember(user);
 	}
 
