@@ -38,6 +38,11 @@ class ScanView extends BaseView{
 		LinearLayout L = Shell();
 			L.addView(BigTextView("Scan Item"));
 			
+			
+			//Button B = Button(); L.addView(B);
+				
+				//B.setText("Scan Item");
+				
 		return L;
 	}
 	

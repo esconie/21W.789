@@ -1,20 +1,22 @@
 package Shopaholix.main;
 
+import java.util.ArrayList;
+
+import Shopaholix.database.Backend;
+import Shopaholix.database.Item;
+import Shopaholix.database.ItemRatings.Rating;
+import Shopaholix.database.Tag;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView.BufferType;
-import android.widget.Toast;
-import android.widget.TextView;
-import android.location.*;
 public class SearchActivity extends Activity {
     /** Called when the activity is first created. */
 	
@@ -26,19 +28,32 @@ public class SearchActivity extends Activity {
         final EditText searchBar = view.EditText();
     	final LinearLayout results = view.VerticalLayout();
         setContentView(view.render(searchBar, results));
-        
-<<<<<<< HEAD
-        EditText editText = (EditText)findViewById(R.id.editText);
-        final LinearLayout searchLine = (LinearLayout)lInflator.inflate(R.layout.search_result, null);
-        editText.addTextChangedListener(new TextWatcher(){
-=======
+        final Backend backend = new Backend((Context)this);
+        final Activity that = this;
         searchBar.addTextChangedListener(new TextWatcher(){
 			@Override
->>>>>>> 261b16c14179faa5c5a881fe6f885521823c742d
 			public void afterTextChanged(Editable s) {
-				results.removeAllViews();
+				String[] tokens = s.toString().split(" ");
+				ArrayList<Tag> ALT = new ArrayList<Tag>();
+				for(String token: tokens){ ALT.add(new Tag(token)); }
+				ArrayList<Item> suggestedItems = backend.getSuggestedItems(ALT);
+				ArrayList<Tag> suggestedTags = backend.getSuggestedTags(ALT);
 				
-				results.addView(view.SearchResult(s.toString()));
+				results.removeAllViews();
+				for(final Item i: suggestedItems){
+					
+					View itemResult = view.SearchResult(i.name, i.ratings.get("Personal"));
+					
+					results.addView(itemResult);
+					
+					itemResult.setOnClickListener(new OnClickListener(){
+						public void onClick(View view){
+							Intent myIntent = new Intent(view.getContext(), ItemActivity.class);
+							myIntent.putExtra("upc", i.upc);
+			                that.startActivity(myIntent);
+						}
+					});
+				}
 			}
 
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -61,7 +76,7 @@ class SearchView extends BaseView{
 		return L;
 	}
 	
-	public View SearchResult(String text){
+	public View SearchResult(String text, Rating myRating){
 		LinearLayout L = LinearLayout();
 		L.setOrientation(LinearLayout.HORIZONTAL);
 				
@@ -69,7 +84,12 @@ class SearchView extends BaseView{
 			
 			ImageView I = ImageView();
 				I.setLayoutParams(new LinearLayout.LayoutParams(50, 50));
-				I.setImageResource(R.drawable.green_up);
+				switch (myRating){
+					case GOOD: I.setImageResource(R.drawable.green_up); break;
+					case NEUTRAL: I.setImageResource(R.drawable.yellow_mid); break;
+					case BAD: I.setImageResource(R.drawable.red_down); break;
+				}
+				
 			L.addView(I);			
 		return L;
 	}
