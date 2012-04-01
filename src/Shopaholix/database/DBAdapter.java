@@ -81,10 +81,19 @@ public class DBAdapter {
 		String[] tagNames = prodName.split("\\s+");
 		for(String tag: tagNames){
 			tags.put(KEY_TAGNAME, tag);
+			tags.put(KEY_TAGCOUNT, getTagCount(tag) + 1);
 		}
-		//TODO: catch the conflict and increment count 
-		db.insertWithOnConflict(DATABASE_TAGS, null, tags, SQLiteDatabase.CONFLICT_ROLLBACK);
+		db.insertWithOnConflict(DATABASE_TAGS, null, tags, SQLiteDatabase.CONFLICT_REPLACE);
 		return db.insert(DATABASE_ITEMS, null, initialValues);
+	}
+	
+	// ---get how many times a tag has come up so far---
+	private int getTagCount(String tag){
+		Cursor tagCount = db.query(true, DATABASE_TAGS, null, KEY_TAGNAME + "="
+				+ tag, null, null, null, null, null);
+		if(tagCount.getCount() < 1)
+			return 0;
+		return tagCount.getInt(tagCount.getColumnIndex(KEY_TAGCOUNT));
 	}
 	
 	// ---insert an item into the database---
@@ -136,6 +145,13 @@ public class DBAdapter {
 	// ---retrieves all the tags---
 	public ArrayList<Tag> getAllTags(){
 		ArrayList<Tag> output = new ArrayList<Tag>();
+		Cursor allTags = db.query(DATABASE_TAGS, null, null, null, null,
+				null, null);
+		if (allTags.moveToFirst()) {
+			while (allTags.moveToNext()) {
+				output.add(new Tag(allTags.getString(allTags.getColumnIndex(KEY_TAGNAME))));
+			}
+		}
 		return output;
 	}
 
