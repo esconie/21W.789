@@ -31,7 +31,6 @@ public class SearchActivity extends Activity {
         final Backend backend = new Backend((Context)this);
         final Activity that = this;
         searchBar.addTextChangedListener(new TextWatcher(){
-			@Override
 			public void afterTextChanged(Editable s) {
 				String[] tokens = s.toString().split(" ");
 				ArrayList<Tag> ALT = new ArrayList<Tag>();

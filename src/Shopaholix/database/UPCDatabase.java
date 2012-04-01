@@ -40,17 +40,18 @@ public class UPCDatabase {
 	}
 	
 	private static String toItem(String data) {
-		String pattern = "\"(.+)\",\"(.+)\",\"(.+)\",\"(.+)\",\"(.+)\",\"(.+)\"";
+//		String pattern = "\"(.+)\",\"(.+)\",\"(.+)\",\"(.+)\",\"(.+)\",\"(.+)\"";
 		if (data == null) {
 
 			return null;
 		}
-		if (data.matches(pattern)) {
-			return data.replace(pattern, "$1");
-		}
-		else {
-
-			return null;
-		}
+		return data.substring(1,data.indexOf("\",\""));
+//		if (data.matches(pattern)) {
+//			return data.replace(pattern, "$1");
+//		}
+//		else {
+//
+//			return null;
+//		}
 	}
 }
