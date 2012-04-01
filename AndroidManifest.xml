@@ -23,7 +23,7 @@
             android:name=".ItemActivity"
             android:label="@string/app_name" >
             <intent-filter>
-               
+    
             </intent-filter>
         </activity>
         
@@ -37,9 +37,9 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".BackendTestActivity" >
+        <activity android:name=".SearchActivity" >
 	        <intent-filter>
-
+]
 	        </intent-filter>
 	        
 	    </activity>
