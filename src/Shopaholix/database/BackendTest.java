@@ -12,11 +12,11 @@ public class BackendTest extends AsyncTask<String, String, String> {
 	}
 	@Override
 	protected String doInBackground(String... params) {
+		String upc="037000188421";
 		Backend backend=new Backend(context);
 		Log.d("BackendTest","starting backend test");
-		Item item=backend.getItem("037000188421");
-		Log.d("BackendTest",item.name);
-				
+		Item item=UPCDatabase.lookupByUPC(upc);
+		Log.d("BackendTest",item.toString());
 		Log.d("BackendTest","finished backend test");
 		return null;
 		
