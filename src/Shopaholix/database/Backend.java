@@ -117,7 +117,7 @@ public class Backend {
 		return score;
 	}
 
-	public Item getItem(long upc) {
+	public Item getItem(String upc) {
 		if (db.contains(upc))
 			return db.getItem(upc);
 		else {
@@ -126,10 +126,10 @@ public class Backend {
 			return item;
 		}
 	}
-	public void rateItem(long UPC,Rating rating){
+	public void rateItem(String UPC,Rating rating){
 		db.updateItemRating(UPC, rating);
 	}
-	public void rateFamilyItem(long UPC,String name, Rating rating){
+	public void rateFamilyItem(String UPC,String name, Rating rating){
 		db.updateItemFamilyRating(UPC, name, rating);
 	}
 
