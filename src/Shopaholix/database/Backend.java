@@ -28,7 +28,7 @@ public class Backend {
 		return getSuggestedItems(tags, 5);
 	}
 
-	private ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags,
+	public ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags,
 			int numberOfResults) {
 		Collection<Item> items = this.items.values();
 		PriorityQueue<Tuple<Item, Integer>> bestItems = new PriorityQueue<Tuple<Item, Integer>>();
@@ -48,7 +48,7 @@ public class Backend {
 
 	private int scoreItem(Item item) {
 		int score = 0;
-		for (User user : item.ratings.keySet()) {
+		for (User user : users) {
 			int weight = 1;
 			if (user.equals(me)) {
 				weight = 5;
@@ -68,7 +68,7 @@ public class Backend {
 		return getSuggestedTags(requiredTags, 5);
 	}
 
-	private ArrayList<Tag> getSuggestedTags(ArrayList<Tag> requiredTags,
+	public ArrayList<Tag> getSuggestedTags(ArrayList<Tag> requiredTags,
 			int numberOfResults) {
 		PriorityQueue<Tuple<Tag, Integer>> bestTags = new PriorityQueue<Tuple<Tag, Integer>>();
 		for (Tag tag : allTags) {
@@ -77,7 +77,11 @@ public class Backend {
 		}
 		ArrayList<Tag> suggestedTags = new ArrayList<Tag>();
 		while (numberOfResults > 0 && !bestTags.isEmpty()) {
-			suggestedTags.add(bestTags.poll().a);
+			Tuple<Tag,Integer> temp=bestTags.poll();
+			if(temp.b<-1000){
+				break;
+			}
+			suggestedTags.add(temp.a);
 			numberOfResults--;
 		}
 		return suggestedTags;
@@ -85,6 +89,12 @@ public class Backend {
 
 	private int scoreTag(Tag tag, ArrayList<Tag> tags) {
 		HashMap<User, HashMap<Rating, Integer>> aggregate = new HashMap<User, HashMap<Rating, Integer>>();
+		boolean satisfied=false;
+		int score = 0;
+		if(tags.contains(tag))
+		{
+			score-=10000;
+		}
 		for (User user : users) {
 			HashMap<Rating, Integer> temp = new HashMap<Rating, Integer>();
 			for (Rating rating : Rating.values()) {
@@ -94,14 +104,16 @@ public class Backend {
 		}
 		for (Item item : items.values()) {
 			if (item.satisfies(tags, tag)) {
-				for (User user : item.ratings.keySet()) {
+				for (User user : users) {
 					HashMap<Rating, Integer> temp = aggregate.get(user);
 					Rating rating = item.ratings.get(user);
 					temp.put(rating, temp.get(rating) + 1);
 				}
+				score+=2;
+				satisfied=true;
 			}
 		}
-		int score = 0;
+		
 		TagRatings tagRating = new TagRatings();
 		for (User user : users) {
 			int weight = 1;
@@ -125,6 +137,7 @@ public class Backend {
 					* temp.get(Rating.BAD);
 		}
 
+		if(!satisfied){score-=10000;}//so tags that don't have any items satisfied by them aren't displayed
 		tag.ratings = tagRating;
 		return -score;
 	}

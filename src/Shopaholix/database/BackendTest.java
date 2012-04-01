@@ -32,7 +32,7 @@ public class BackendTest extends AsyncTask<String, String, String> {
 		Log.d("BackendTest",backend.getItem(upcs[0]).toString());
 		Log.d("BackendTest",backend.getFamilyMembers().toString());
 		ArrayList<Tag> requiredTags=new ArrayList<Tag>();
-		Log.d("BackendTest",backend.getSuggestedItems(requiredTags).toString());
+		Log.d("BackendTest",backend.getSuggestedItems(requiredTags,1).toString());
 		Log.d("BackendTest",backend.getSuggestedTags(requiredTags).toString());
 		requiredTags.add(new Tag("potato"));
 		Log.d("BackendTest",backend.getSuggestedItems(requiredTags).toString());
@@ -40,6 +40,7 @@ public class BackendTest extends AsyncTask<String, String, String> {
 		requiredTags.add(new Tag("original"));
 		Log.d("BackendTest",backend.getSuggestedItems(requiredTags).toString());
 		Log.d("BackendTest",backend.getSuggestedTags(requiredTags).toString());
+		
 		
 		
 		

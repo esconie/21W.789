@@ -14,6 +14,10 @@ public class Item {
 		this.ratings=ratings;
 		tags=new HashSet<Tag>();
 		for(String tag:name.split(" ")){
+			tag=tag.replaceAll("[^a-zA-Z]", "");//really aggressive processing of tags. May need to be fine tuned.
+			if(tag.equals(""))
+				continue;
+			
 			tags.add(new Tag(tag));
 		}
 		
