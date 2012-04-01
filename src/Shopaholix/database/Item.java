@@ -12,6 +12,7 @@ public class Item {
 		this.upc=upc;
 		this.name=name;
 		this.ratings=ratings;
+		tags=new HashSet<String>();
 		for(String tag:name.split(" ")){
 			tags.add(tag);
 		}
