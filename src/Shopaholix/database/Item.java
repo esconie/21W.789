@@ -28,4 +28,7 @@ public class Item {
 		 return satisfies(requiredTags)&&tags.contains(requiredTag);
 	}
 
+	public String toString(){
+		return upc+", "+name+", "+ratings.toString();
+	}
 }
