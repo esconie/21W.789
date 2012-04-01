@@ -37,27 +37,8 @@ class ItemView extends BaseView{
 	public View render(){
 		LinearLayout L = Shell();
 			L.addView(BigTextView("Chobani Yoghurt"));
-			LinearLayout V = HorizontalLayout(); L.addView(V);
-				ImageView I = ImageView(); V.addView(I);
-					I.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
-				
-				
-				
-				RadioGroup RG = RadioGroup(); V.addView(RG);
-					RG.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
-					
-					RadioButton greenUp = RadioButton(); RG.addView(greenUp);
-						greenUp.setButtonDrawable(R.layout.green_up);
-						greenUp.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 0, 1));
-					RadioButton yellowMid = RadioButton(); RG.addView(yellowMid);
-						yellowMid.setButtonDrawable(R.layout.yellow_mid);
-						yellowMid.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 0, 1));
-					RadioButton redDown = RadioButton(); RG.addView(redDown);
-						redDown.setButtonDrawable(R.layout.red_down);
-						redDown.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 0, 1));
-						
-					
-				
+			
+			L.addView(RateSection());
 			L.addView(HR());
 			
 			LinearLayout L1 = VerticalLayout(); L.addView(L1);
@@ -68,6 +49,27 @@ class ItemView extends BaseView{
 			
 			L.addView(BigTextView("Public Opinion 74%"));
 		return L;
+	}
+	
+	public View RateSection(){
+		LinearLayout V = HorizontalLayout(); 
+			ImageView I = ImageView(); V.addView(I);
+				I.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
+			
+			RadioGroup RG = RadioGroup(); V.addView(RG);
+				RG.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
+				
+				RadioButton greenUp = RadioButton(); RG.addView(greenUp);
+					greenUp.setButtonDrawable(R.layout.green_up);
+					greenUp.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 0, 1));
+				RadioButton yellowMid = RadioButton(); RG.addView(yellowMid);
+					yellowMid.setButtonDrawable(R.layout.yellow_mid);
+					yellowMid.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 0, 1));
+				RadioButton redDown = RadioButton(); RG.addView(redDown);
+					redDown.setButtonDrawable(R.layout.red_down);
+					redDown.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 0, 1));
+					
+		return V;
 	}
 	
 	public View UserResult(String name){
