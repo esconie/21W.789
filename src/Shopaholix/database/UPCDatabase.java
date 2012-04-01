@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 public class UPCDatabase {
 	
 
-	public static Item lookupByUPC(long upc) {
+	public static Item lookupByUPC(String upc) {
 		try {
 		java.net.URL url = new java.net.URL("http://www.searchupc.com/handlers/upcsearch.ashx?request_type=1&access_token=567CFFB1-26F8-4BD6-8C29-935D9324B425&upc=037000230113");
 		 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
