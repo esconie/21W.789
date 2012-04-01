@@ -4,17 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
-import android.content.Context;
-
 import Shopaholix.database.ItemRatings.Rating;
+import android.content.Context;
+import android.util.Log;
 
 public class Backend {
 	private DBAdapter db;
 
-	public Backend(Context context){
-		db=new DBAdapter(context);
+	public Backend(Context context) {
+		db = new DBAdapter(context);
 		db.open();
 	}
+
 	public ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags) {
 		return getSuggestedItems(tags, 10);
 	}
@@ -25,7 +26,7 @@ public class Backend {
 		PriorityQueue<Tuple<Item, Integer>> bestItems = new PriorityQueue<Tuple<Item, Integer>>();
 		for (Item item : items) {
 			int score = scoreItem(item);
-			bestItems.add(new Tuple<Item,Integer>(item, score));
+			bestItems.add(new Tuple<Item, Integer>(item, score));
 		}
 		ArrayList<Item> suggestedItems = new ArrayList<Item>();
 		while (numberOfResults > 0 && !bestItems.isEmpty()) {
@@ -63,7 +64,7 @@ public class Backend {
 		PriorityQueue<Tuple<Tag, Integer>> bestTags = new PriorityQueue<Tuple<Tag, Integer>>();
 		for (Tag tag : allTags) {
 			int score = scoreTag(tag, tags, items);
-			bestTags.add(new Tuple<Tag,Integer>(tag, score));
+			bestTags.add(new Tuple<Tag, Integer>(tag, score));
 		}
 		ArrayList<Tag> suggestedTags = new ArrayList<Tag>();
 		while (numberOfResults > 0 && !bestTags.isEmpty()) {
@@ -91,7 +92,7 @@ public class Backend {
 				}
 			}
 		}
-		int score=0;
+		int score = 0;
 		TagRatings tagRating = new TagRatings();
 		for (User user : users) {
 			int weight = 1;
@@ -110,7 +111,8 @@ public class Backend {
 			} else {
 				tagRating.put(user, Rating.NEUTRAL);
 			}
-			score+=weight*temp.get(Rating.GOOD)-weight*temp.get(Rating.BAD);
+			score += weight * temp.get(Rating.GOOD) - weight
+					* temp.get(Rating.BAD);
 		}
 
 		tag.ratings = tagRating;
@@ -118,18 +120,21 @@ public class Backend {
 	}
 
 	public Item getItem(String upc) {
-		if (db.contains(upc))
+		if (db.contains(upc)) {
 			return db.getItem(upc);
-		else {
+		} else {
 			Item item = UPCDatabase.lookupByUPC(upc);
+			
 			db.putItem(item);
 			return item;
 		}
 	}
-	public void rateItem(String UPC,Rating rating){
+
+	public void rateItem(String UPC, Rating rating) {
 		db.updateItemRating(UPC, rating);
 	}
-	public void rateFamilyItem(String UPC,String name, Rating rating){
+
+	public void rateFamilyItem(String UPC, String name, Rating rating) {
 		db.updateItemFamilyRating(UPC, name, rating);
 	}
 
@@ -140,7 +145,8 @@ public class Backend {
 	public void removeFamilyMember(User user) {
 		db.removeFamilyMember(user);
 	}
-	public ArrayList<User> getFamilyMembers(){
+
+	public ArrayList<User> getFamilyMembers() {
 		return db.getUsers();
 	}
 
