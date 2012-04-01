@@ -1,57 +1,72 @@
 package Shopaholix.main;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
-import android.location.*;
-
+import Shopaholix.scanning.*;
 
 public class ScanActivity extends Activity {
-    /** Called when the activity is first created. */
-	ImageView greenUp;
-	ImageView yellowMid;
-	ImageView redDown;
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ScanView view = new ScanView(this);
-        Button B = view.Button();
-        B.setOnClickListener(new OnClickListener(){
-        	public void onClick(View view){
-        		
-        	}
-        });
-        setContentView(view.render(B));
-    }
-    public void clickUp(View v){
-    	
-    }
-    public void clickMid(View v){
-    	
-    }
-	public void clickDown(View v){
-		
+	/** Called when the activity is first created. */
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		ScanView view = new ScanView(this);
+		Button B = view.Button();
+		B.setOnClickListener(new OnClickListener() {
+			public void onClick(View view) {
+				Intent intent = new Intent(
+						"com.google.zxing.client.android.SCAN");
+				intent.putExtra("SCAN_MODE", "PRODUCT_MODE");
+				intent.putExtra("SCAN_WIDTH", 400);
+				intent.putExtra("SCAN_HEIGHT", 400);
+				intent.putExtra("RESULT_DISPLAY_DURATION_MS", 3000L);
+				intent.putExtra("PROMPT_MESSAGE", "Scanning for UPC Code");
+				startActivityForResult(intent, IntentIntegrator.REQUEST_CODE);
+			}
+		});
+		setContentView(view.render(B));
 	}
-    
+	
+	  @Override
+	  public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	    IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+	    if (result != null) {
+	      String contents = result.getContents();
+	      if (contents != null) {
+	        showDialog(R.string.app_name, result.toString());
+	      } else {
+	        showDialog(R.string.app_name, "Failure");
+	      }
+	    }
+	  }
+	
+	private void showDialog(int title, CharSequence message) {
+	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    builder.setTitle(title);
+	    builder.setMessage(message);
+	    builder.setPositiveButton("OK", null);
+	    builder.show();
+	  }
 }
 
-class ScanView extends BaseView{
-	public ScanView(Activity a){super(a);}
-	
-	public View render(Button B){
+class ScanView extends BaseView {
+	public ScanView(Activity a) {
+		super(a);
+	}
+
+	public View render(Button B) {
 		LinearLayout L = Shell();
-			L.addView(BigTextView("Scan Item"));
-			
-			
-			L.addView(B);
-				B.setText("Scan Item");
-				
+		L.addView(BigTextView("Scan Item"));
+
+		L.addView(B);
+		B.setText("Scan Item");
+
 		return L;
 	}
-	
-	
+
 }
