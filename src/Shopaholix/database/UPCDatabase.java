@@ -12,7 +12,7 @@ public class UPCDatabase {
 
 	public static Item lookupByUPC(String upc) {
 		try {
-		java.net.URL url = new java.net.URL("http://www.searchupc.com/handlers/upcsearch.ashx?request_type=1&access_token=567CFFB1-26F8-4BD6-8C29-935D9324B425&upc=037000230113");
+		java.net.URL url = new java.net.URL("http://www.searchupc.com/handlers/upcsearch.ashx?request_type=1&access_token=567CFFB1-26F8-4BD6-8C29-935D9324B425&upc="+upc);
 		 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 	     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
 	     String item = readStream(in);
@@ -38,7 +38,10 @@ public class UPCDatabase {
 	}
 	
 	private static String toItem(String data) {
-		String pattern = "\"(.+)\",.+";
+		String pattern = "\"(.+)\",\"(.+)\",\"(.+)\",\"(.+)\",\"(.+)\",\"(.+)\"";
+		if (data == null) {
+			return null;
+		}
 		if (data.matches(pattern)) {
 			return data.replace(pattern, "$1");
 		}
