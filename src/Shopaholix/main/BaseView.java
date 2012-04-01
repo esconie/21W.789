@@ -66,10 +66,12 @@ public class BaseView {
 	}
 	
 	
-    
+
+    public Button Button(){
+    	return new Button(a);
+    }
     public RadioGroup RadioGroup(){
     	return new RadioGroup(a);
-    
     }
     public RadioButton RadioButton(){
     	return new RadioButton(a);
