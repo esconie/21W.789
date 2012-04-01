@@ -6,15 +6,15 @@ import java.util.HashSet;
 public class Item {
 	public String upc;
 	public String name;
-	public HashSet<String> tags;
+	public HashSet<Tag> tags;
 	public ItemRatings ratings;
 	public Item(String upc, String name, ItemRatings ratings){
 		this.upc=upc;
 		this.name=name;
 		this.ratings=ratings;
-		tags=new HashSet<String>();
+		tags=new HashSet<Tag>();
 		for(String tag:name.split(" ")){
-			tags.add(tag);
+			tags.add(new Tag(tag));
 		}
 		
 	}

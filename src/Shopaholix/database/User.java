@@ -10,4 +10,12 @@ public class User {
 	public String toString(){
 		return name;
 	}
+	public boolean equals(Object o){
+		return ((User)o).name.equals(name);
+		
+	}
+	public int hashCode(){
+		return name.hashCode();
+	}
+
 }

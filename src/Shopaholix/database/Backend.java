@@ -10,21 +10,22 @@ import Shopaholix.database.ItemRatings.Rating;
 import android.content.Context;
 
 public class Backend {
-	HashMap<String,Item> items=new HashMap<String, Item>();
+	HashMap<String, Item> items = new HashMap<String, Item>();
 	private Context context;
 	private User me;
 	private HashSet<User> users;
-	
+	private HashSet<Tag> allTags;
 
 	public Backend(Context context) {
-		this.context=context;
-		me=new User("Personal");
-		users=new HashSet<User>();
+		this.context = context;
+		me = new User("Personal");
+		users = new HashSet<User>();
+		allTags = new HashSet<Tag>();
 		users.add(me);
 	}
 
 	public ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags) {
-		return getSuggestedItems(tags, 10);
+		return getSuggestedItems(tags, 5);
 	}
 
 	private ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags,
@@ -32,12 +33,15 @@ public class Backend {
 		Collection<Item> items = this.items.values();
 		PriorityQueue<Tuple<Item, Integer>> bestItems = new PriorityQueue<Tuple<Item, Integer>>();
 		for (Item item : items) {
-			int score = scoreItem(item);
-			bestItems.add(new Tuple<Item, Integer>(item, score));
+			if (item.satisfies(tags)) {
+				int score = scoreItem(item);
+				bestItems.add(new Tuple<Item, Integer>(item, score));
+			}
 		}
 		ArrayList<Item> suggestedItems = new ArrayList<Item>();
 		while (numberOfResults > 0 && !bestItems.isEmpty()) {
 			suggestedItems.add(bestItems.poll().a);
+			numberOfResults--;
 		}
 		return suggestedItems;
 	}
@@ -60,27 +64,26 @@ public class Backend {
 
 	}
 
-	public ArrayList<Tag> getSuggestedTags(ArrayList<Tag> tags) {
-		return getSuggestedTags(tags, 10);
+	public ArrayList<Tag> getSuggestedTags(ArrayList<Tag> requiredTags) {
+		return getSuggestedTags(requiredTags, 5);
 	}
 
-	private ArrayList<Tag> getSuggestedTags(ArrayList<Tag> tags,
+	private ArrayList<Tag> getSuggestedTags(ArrayList<Tag> requiredTags,
 			int numberOfResults) {
-		ArrayList<Tag> allTags = tags;
-		Collection<Item> items = this.items.values();
 		PriorityQueue<Tuple<Tag, Integer>> bestTags = new PriorityQueue<Tuple<Tag, Integer>>();
 		for (Tag tag : allTags) {
-			int score = scoreTag(tag, tags, items);
+			int score = scoreTag(tag, requiredTags);
 			bestTags.add(new Tuple<Tag, Integer>(tag, score));
 		}
 		ArrayList<Tag> suggestedTags = new ArrayList<Tag>();
 		while (numberOfResults > 0 && !bestTags.isEmpty()) {
 			suggestedTags.add(bestTags.poll().a);
+			numberOfResults--;
 		}
 		return suggestedTags;
 	}
 
-	private int scoreTag(Tag tag, ArrayList<Tag> tags, Collection<Item> items2) {
+	private int scoreTag(Tag tag, ArrayList<Tag> tags) {
 		HashMap<User, HashMap<Rating, Integer>> aggregate = new HashMap<User, HashMap<Rating, Integer>>();
 		for (User user : users) {
 			HashMap<Rating, Integer> temp = new HashMap<Rating, Integer>();
@@ -89,12 +92,12 @@ public class Backend {
 			}
 			aggregate.put(user, temp);
 		}
-		for (Item item : items2) {
+		for (Item item : items.values()) {
 			if (item.satisfies(tags, tag)) {
 				for (User user : item.ratings.keySet()) {
 					HashMap<Rating, Integer> temp = aggregate.get(user);
 					Rating rating = item.ratings.get(user);
-					temp.put(rating, temp.get(rating));
+					temp.put(rating, temp.get(rating) + 1);
 				}
 			}
 		}
@@ -108,9 +111,10 @@ public class Backend {
 			HashMap<Rating, Integer> temp = aggregate.get(user);
 			int numberOfRatings = temp.get(Rating.GOOD)
 					+ temp.get(Rating.NEUTRAL) + temp.get(Rating.BAD);
-			if (temp.get(Rating.GOOD) / numberOfRatings > .5) {
+
+			if (temp.get(Rating.GOOD) > .5 * numberOfRatings) {
 				tagRating.put(user, Rating.GOOD);
-			} else if (temp.get(Rating.BAD) / numberOfRatings > .5) {
+			} else if (temp.get(Rating.BAD) > numberOfRatings * .5) {
 				tagRating.put(user, Rating.BAD);
 			} else if (numberOfRatings == 0) {
 				tagRating.put(user, Rating.UNRATED);
@@ -130,18 +134,21 @@ public class Backend {
 			return items.get(upc);
 		} else {
 			Item item = UPCDatabase.lookupByUPC(upc);
-			
-			items.put(upc,item);
+
+			items.put(upc, item);
+			for (Tag tag : item.tags) {
+				allTags.add(tag);
+			}
 			return item;
 		}
 	}
 
 	public void rateItem(String UPC, Rating rating) {
-		items.get(UPC).ratings.put(me,rating);
+		items.get(UPC).ratings.put(me, rating);
 	}
 
 	public void rateFamilyItem(String UPC, User user, Rating rating) {
-		items.get(UPC).ratings.put(user,rating);
+		items.get(UPC).ratings.put(user, rating);
 	}
 
 	public void addFamilyMember(User user) {
