@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 
+import android.util.Log;
+
 public class UPCDatabase {
 	
 
@@ -19,7 +21,7 @@ public class UPCDatabase {
 	     urlConnection.disconnect();
 	     return new Item(upc, item, new ItemRatings());
 		}
-		catch (Exception e) {
+		catch (IOException e) {
 			return null;
 		}
 	}
@@ -40,12 +42,14 @@ public class UPCDatabase {
 	private static String toItem(String data) {
 		String pattern = "\"(.+)\",\"(.+)\",\"(.+)\",\"(.+)\",\"(.+)\",\"(.+)\"";
 		if (data == null) {
+
 			return null;
 		}
 		if (data.matches(pattern)) {
 			return data.replace(pattern, "$1");
 		}
 		else {
+
 			return null;
 		}
 	}

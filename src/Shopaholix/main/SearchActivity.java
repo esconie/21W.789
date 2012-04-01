@@ -31,17 +31,14 @@ public class SearchActivity extends Activity {
         EditText editText = (EditText)findViewById(R.id.editText);
         final LinearLayout searchLine = (LinearLayout)lInflator.inflate(R.layout.search_result, null);
         editText.addTextChangedListener(new TextWatcher(){
-			@Override
 			public void afterTextChanged(Editable s) {
 				results.removeAllViews();
 				((TextView)searchLine.getChildAt(0)).setText(s.toString(), BufferType.NORMAL);
 				results.addView(searchLine);
 			}
 
-			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
         
