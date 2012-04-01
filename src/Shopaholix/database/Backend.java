@@ -18,6 +18,9 @@ public class Backend {
 
 	public Backend(Context context) {
 		this.context=context;
+		me=new User("Personal");
+		users=new HashSet<User>();
+		users.add(me);
 	}
 
 	public ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags) {
@@ -53,7 +56,7 @@ public class Backend {
 				score += weight;
 			}
 		}
-		return score;
+		return -score;
 
 	}
 
@@ -119,7 +122,7 @@ public class Backend {
 		}
 
 		tag.ratings = tagRating;
-		return score;
+		return -score;
 	}
 
 	public Item getItem(String upc) {
