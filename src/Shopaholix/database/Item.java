@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Item {
-	public long upc;
+	public String upc;
 	public String name;
 	public HashSet<String> tags;
 	public ItemRatings ratings;
-	public Item(long upc, String name, ItemRatings ratings){
+	public Item(String upc, String name, ItemRatings ratings){
 		this.upc=upc;
 		this.name=name;
 		this.ratings=ratings;

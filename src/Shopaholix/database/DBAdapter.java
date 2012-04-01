@@ -73,18 +73,27 @@ public class DBAdapter {
 	}
 
 	// ---insert an item into the database given UPC and product name---
-	private long putItem(long UPC, String prodName) {
+	private long putItem(String upc, String prodName) {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_PRODNAME, prodName);
-		initialValues.put(KEY_UPC, UPC);
+		initialValues.put(KEY_UPC, upc);
 		ContentValues tags = new ContentValues();
 		String[] tagNames = prodName.split("\\s+");
 		for(String tag: tagNames){
 			tags.put(KEY_TAGNAME, tag);
+			tags.put(KEY_TAGCOUNT, getTagCount(tag) + 1);
 		}
-		//TODO: catch the conflict and increment count 
-		db.insertWithOnConflict(DATABASE_TAGS, null, tags, SQLiteDatabase.CONFLICT_ROLLBACK);
+		db.insertWithOnConflict(DATABASE_TAGS, null, tags, SQLiteDatabase.CONFLICT_REPLACE);
 		return db.insert(DATABASE_ITEMS, null, initialValues);
+	}
+	
+	// ---get how many times a tag has come up so far---
+	private int getTagCount(String tag){
+		Cursor tagCount = db.query(true, DATABASE_TAGS, null, KEY_TAGNAME + "="
+				+ tag, null, null, null, null, null);
+		if(tagCount.getCount() < 1)
+			return 0;
+		return tagCount.getInt(tagCount.getColumnIndex(KEY_TAGCOUNT));
 	}
 	
 	// ---insert an item into the database---
@@ -93,7 +102,7 @@ public class DBAdapter {
 	}
 
 	// ---returns item given UPC---
-	public Item getItem(long UPC) throws SQLException {
+	public Item getItem(String UPC) throws SQLException {
 		Cursor item = db.query(true, DATABASE_ITEMS, null, KEY_UPC + "="
 				+ UPC, null, null, null, null, null);
 		
@@ -107,7 +116,7 @@ public class DBAdapter {
 			for (int i = personalRatingIndex + 1; i < item.getColumnCount(); i++)
 				ratings.put(new User(item.getColumnName(i)), Rating.values()[item.getInt(i)]);
 			// Getting UPC and item name
-			long upc = item.getLong(upcIndex);
+			String upc = item.getString(upcIndex);
 			String name = item.getString(prodNameIndex);
 			return new Item(upc, name, ratings);
 		}
@@ -120,22 +129,29 @@ public class DBAdapter {
 	}
 	
 	// ---updates personal item rating---
-	public boolean updateItemRating(long UPC, Rating rating) {
+	public boolean updateItemRating(String uPC, Rating rating) {
 		ContentValues args = new ContentValues();
 		args.put(KEY_RATING_PERSONAL, rating.ordinal());
-		return db.update(DATABASE_ITEMS, args, KEY_UPC + "=" + UPC, null) > 0;
+		return db.update(DATABASE_ITEMS, args, KEY_UPC + "=" + uPC, null) > 0;
 	}
 
 	// ---updates family member's rating of item---
-	public boolean updateItemFamilyRating(long UPC, String name, Rating rating) {
+	public boolean updateItemFamilyRating(String uPC, String name, Rating rating) {
 		ContentValues args = new ContentValues();
 		args.put(name, rating.ordinal());
-		return db.update(DATABASE_ITEMS, args, KEY_UPC + "=" + UPC, null) > 0;
+		return db.update(DATABASE_ITEMS, args, KEY_UPC + "=" + uPC, null) > 0;
 	}
 
 	// ---retrieves all the tags---
 	public ArrayList<Tag> getAllTags(){
 		ArrayList<Tag> output = new ArrayList<Tag>();
+		Cursor allTags = db.query(DATABASE_TAGS, null, null, null, null,
+				null, null);
+		if (allTags.moveToFirst()) {
+			while (allTags.moveToNext()) {
+				output.add(new Tag(allTags.getString(allTags.getColumnIndex(KEY_TAGNAME))));
+			}
+		}
 		return output;
 	}
 
@@ -157,7 +173,7 @@ public class DBAdapter {
 				for (int i = personalRatingIndex + 1; i < allItems.getColumnCount(); i++)
 					ratings.put(new User(allItems.getColumnName(i)), Rating.values()[allItems.getInt(i)]);
 				// Getting UPC and item name
-				long upc = allItems.getLong(upcIndex);
+				String upc = allItems.getString(upcIndex);
 				String name = allItems.getString(prodNameIndex);
 				output.add(new Item(upc, name, ratings));
 			}
@@ -166,9 +182,9 @@ public class DBAdapter {
 	}
 	
 	// ---returns boolean of whether database contains item---
-	public boolean contains(long UPC) throws SQLException {
+	public boolean contains(String upc) throws SQLException {
 		Cursor mCursor = db.query(true, DATABASE_ITEMS, null, KEY_UPC + "="
-				+ UPC, null, null, null, null, null);
+				+ upc, null, null, null, null, null);
 		if (mCursor.getCount() > 0) {
 			return true;
 		}
