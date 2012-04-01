@@ -3,6 +3,8 @@ package Shopaholix.main;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ShopaholixActivity extends Activity {
@@ -18,3 +20,5 @@ public class ShopaholixActivity extends Activity {
         t.setText("Testing commitqewrger re");
     }
 }
+
+
