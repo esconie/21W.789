@@ -23,12 +23,14 @@ public class BackendTest extends AsyncTask<String, String, String> {
 		Log.d("BackendTest",backend.getSuggestedItems("pot").toString());
 		Log.d("BackendTest",backend.getSuggestedTags("sta").toString());
 		
-//		requiredTags.add(new Tag("potato"));
-//		Log.d("BackendTest",backend.getSuggestedItems(requiredTags,new Tag("")).toString());
-//		Log.d("BackendTest",backend.getSuggestedTags(requiredTags,new Tag("")).toString());
-//		requiredTags.add(new Tag("original"));
-//		Log.d("BackendTest",backend.getSuggestedItems(requiredTags,new Tag("")).toString());
-//		Log.d("BackendTest",backend.getSuggestedTags(requiredTags,new Tag("")).toString());
+		Log.d("BackendTest",backend.getSuggestedItems("potato").toString());
+		Log.d("BackendTest",backend.getSuggestedTags("potato").toString());
+
+		Log.d("BackendTest",backend.getSuggestedTags("stack").toString());
+		Log.d("BackendTest",backend.getSuggestedTags("stack ").toString());
+		Log.d("BackendTest",backend.getSuggestedItems("stack").toString());
+		Log.d("BackendTest",backend.getSuggestedItems("   stack    ").toString());
+		Log.d("BackendTest",backend.getSuggestedItems("potato  prInGL").toString());
 		
 		
 		
