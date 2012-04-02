@@ -79,7 +79,7 @@ public class SearchActivity extends Activity {
 					public void onClick(View view){
 						Intent myIntent = new Intent(that, ItemActivity.class);
 						myIntent.putExtra("upc", i.upc);
-		                that.startActivity(myIntent);
+						that.startActivityForResult(myIntent, 10);
 					}
 				});
 			}
