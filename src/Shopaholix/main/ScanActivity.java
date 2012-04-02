@@ -34,8 +34,12 @@ public class ScanActivity extends Activity {
 		final Activity that = this;
 		E.setOnFocusChangeListener(new OnFocusChangeListener(){
 			public void onFocusChange(View view, boolean b){
-				Intent myIntent = new Intent(view.getContext(), SearchActivity.class);
-                that.startActivity(myIntent);
+				if(b){
+					view.setSelected(false);
+					Intent myIntent = new Intent(view.getContext(), SearchActivity.class);
+	                that.startActivity(myIntent);
+				}
+				
 			}
 		});
 		setContentView(view.render(E, B));
@@ -71,11 +75,13 @@ class ScanView extends BaseView {
 	public View render(EditText E, Button B) {
 		LinearLayout L = Shell();
 			L.addView(E);
-			L.addView(BigTextView("Scan Item"));
+			LinearLayout LL = VerticalLayout(); L.addView(LL);
+				LL.addView(BigTextView("Scan Item"));
+				
+				LL.addView(B);
+					B.setText("Scan Item");
 			
-			L.addView(B);
-				B.setText("Scan Item");
-			
+				
 		return L;
 	}
 
