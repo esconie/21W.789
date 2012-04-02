@@ -32,13 +32,13 @@ public class ScanActivity extends Activity {
 		});
 		EditText E = view.EditText();
 		final Activity that = this;
-		E.setOnFocusChangeListener(new OnFocusChangeListener(){
-			public void onFocusChange(View view, boolean b){
-				if(b){
-					view.setSelected(false);
-					Intent myIntent = new Intent(view.getContext(), SearchActivity.class);
-	                that.startActivity(myIntent);
-				}
+		E.setOnClickListener(new OnClickListener(){
+			public void onClick(View view){
+				
+				view.setSelected(false);
+				Intent myIntent = new Intent(view.getContext(), SearchActivity.class);
+                that.startActivity(myIntent);
+			
 				
 			}
 		});

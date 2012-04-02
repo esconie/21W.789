@@ -2,16 +2,18 @@ package Shopaholix.main;
 
 import Shopaholix.database.Backend;
 import Shopaholix.database.Item;
-import Shopaholix.database.ItemRatings;
 import Shopaholix.database.ItemRatings.Rating;
+import Shopaholix.database.User;
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.*;
-import android.location.*;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 
 public class ItemActivity extends Activity {
@@ -29,9 +31,10 @@ public class ItemActivity extends Activity {
         super.onCreate(savedInstanceState);
         backend = Backend.backend;
         
-        upc = savedInstanceState.getString("upc");
+        upc = this.getIntent().getExtras().getString("upc");
         I = backend.getItem(upc);
-        Rating myRating = I.ratings.get("Personal");
+        
+        Rating myRating = I.ratings.get(new User("Personal"));
         ItemView view = new ItemView(this);
         greenUp = view.RadioButton();
         greenUp.setOnClickListener(new OnClickListener(){
@@ -91,12 +94,15 @@ class ItemView extends BaseView{
 				RG.addView(greenUp);
 					greenUp.setButtonDrawable(R.layout.green_up);
 					greenUp.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 0, 1));
+					greenUp.setPadding(150, 0, 0, 0);
 					RG.addView(yellowMid);
 					yellowMid.setButtonDrawable(R.layout.yellow_mid);
 					yellowMid.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 0, 1));
+					yellowMid.setPadding(150, 0, 0, 0);
 					RG.addView(redDown);
 					redDown.setButtonDrawable(R.layout.red_down);
 					redDown.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 0, 1));
+					redDown.setPadding(150, 0, 0, 0);
 					
 				switch(myRating){
 					case GOOD: greenUp.setChecked(true); break;

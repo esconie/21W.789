@@ -21,22 +21,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 public class SearchActivity extends Activity {
     /** Called when the activity is first created. */
-	
+	Backend backend = Backend.backend;
 	SearchView view;
+	LinearLayout results;
+	EditText searchBar;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         view = new SearchView(this);
-        final EditText searchBar = view.EditText();
-    	final LinearLayout results = view.VerticalLayout();
+        searchBar = view.EditText();
+    	results = view.VerticalLayout();
         setContentView(view.render(searchBar, results));
-        final Backend backend = Backend.backend;
+        
         final Activity that = this;
         searchBar.addTextChangedListener(new TextWatcher(){
 			public void afterTextChanged(Editable s) {
 
-				ArrayList<Item> suggestedItems = backend.getSuggestedItems(s.toString());
-				ArrayList<Tag> suggestedTags = backend.getSuggestedTags(s.toString());
+				ArrayList<Item> suggestedItems = backend.getSuggestedItems(searchBar.getText().toString());
+				ArrayList<Tag> suggestedTags = backend.getSuggestedTags(searchBar.getText().toString());
 				
 				results.removeAllViews();
 				for(final Item i: suggestedItems){
@@ -47,9 +49,9 @@ public class SearchActivity extends Activity {
 					
 					itemResult.setOnClickListener(new OnClickListener(){
 						public void onClick(View view){
-							Intent myIntent = new Intent(view.getContext(), ItemActivity.class);
+							Intent myIntent = new Intent(that, ItemActivity.class);
 							myIntent.putExtra("upc", i.upc);
-			                that.startActivity(myIntent);
+			                that.startActivityForResult(myIntent, 10);
 						}
 					});
 				}
@@ -60,6 +62,27 @@ public class SearchActivity extends Activity {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
         
+    }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {     
+    	  super.onActivityResult(requestCode, resultCode, data); 
+    	  ArrayList<Item> suggestedItems = backend.getSuggestedItems(searchBar.getText().toString());
+			ArrayList<Tag> suggestedTags = backend.getSuggestedTags(searchBar.getText().toString());
+			
+			results.removeAllViews();
+			for(final Item i: suggestedItems){
+				
+				View itemResult = view.SearchResult(i.name, i.ratings.get(new User("Personal")));
+				
+				results.addView(itemResult);
+				final Activity that = this;
+				itemResult.setOnClickListener(new OnClickListener(){
+					public void onClick(View view){
+						Intent myIntent = new Intent(that, ItemActivity.class);
+						myIntent.putExtra("upc", i.upc);
+		                that.startActivity(myIntent);
+					}
+				});
+			}
     }
 }
 
