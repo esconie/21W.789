@@ -50,7 +50,6 @@ public class ScanActivity extends Activity {
 	    if (result != null) {
 	      String contents = result.getContents();
 	      if (contents != null) {
-	        showDialog(R.string.app_name, result.toString());
 			Intent ItemIntent = new Intent(this, ItemActivity.class);
 			ItemIntent.putExtra("upc", contents);
 			startActivityForResult(ItemIntent, 10);
