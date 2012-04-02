@@ -11,7 +11,7 @@ import android.content.Context;
 import android.util.Log;
 
 public class Backend {
-	public static Backend backend=new Backend();
+	public static Backend backend = new Backend();
 	HashMap<String, Item> items = new HashMap<String, Item>();
 	private User me;
 	private HashSet<User> users;
@@ -22,46 +22,36 @@ public class Backend {
 		users = new HashSet<User>();
 		allTags = new HashSet<Tag>();
 		users.add(me);
-		String[] upcs={"037000188421","037000230113","037000188438","037000185055","037000185208"};
-		for(String upc:upcs){
+		String[] upcs = { "037000188421", "037000230113", "037000188438",
+				"037000185055", "037000185208" };
+		for (String upc : upcs) {
 			getItem(upc);
 		}
-		User haoyi=new User("Haoyi");
+		User haoyi = new User("Haoyi");
 		addFamilyMember(haoyi);
 		rateItem(upcs[0], Rating.GOOD);
 		rateItem(upcs[1], Rating.GOOD);
 		rateItem(upcs[3], Rating.NEUTRAL);
 		rateItem(upcs[4], Rating.BAD);
 		rateFamilyItem(upcs[0], haoyi, Rating.GOOD);
-		rateFamilyItem(upcs[1],haoyi,Rating.BAD);
+		rateFamilyItem(upcs[1], haoyi, Rating.BAD);
 	}
-
 
 	public ArrayList<Item> getSuggestedItems(String s) {
-		return getSuggestedItems(s,5);
+		return getSuggestedItems(s, 5);
 	}
 
-	
 	private ArrayList<Item> getSuggestedItems(String s, int numberOfResults) {
-		String[] tokens = s.split(" ");
-		ArrayList<Tag> full = new ArrayList<Tag>();
-		Tag partial=new Tag("");
-		if(s!=""){
-		for(String token: tokens){ full.add(new Tag(token));}
-		}
-		if (full.size()!=0&&s.charAt(s.length()-1)!=' '){
-			partial=full.remove(full.size()-1);
-		}
-		return getSuggestedItems(full, partial, numberOfResults);
+		return getSuggestedItems(parseFullTags(s), parsePartialTag(s),
+				numberOfResults);
 	}
-
 
 	public ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags, Tag partial,
 			int numberOfResults) {
 		Collection<Item> items = this.items.values();
 		PriorityQueue<Tuple<Item, Integer>> bestItems = new PriorityQueue<Tuple<Item, Integer>>();
 		for (Item item : items) {
-			if (item.satisfies(tags,partial)) {
+			if (item.satisfies(tags, partial)) {
 				int score = scoreItem(item);
 				bestItems.add(new Tuple<Item, Integer>(item, score));
 			}
@@ -93,24 +83,37 @@ public class Backend {
 	}
 
 	public ArrayList<Tag> getSuggestedTags(String s) {
-		return getSuggestedTags(s,5);
+		return getSuggestedTags(s, 5);
 	}
 
-	
 	private ArrayList<Tag> getSuggestedTags(String s, int numberOfResults) {
-		String[] tokens = s.split(" ");
-		ArrayList<Tag> full = new ArrayList<Tag>();
-		Tag partial=new Tag("");
-		if(s!=""){
-		for(String token: tokens){ full.add(new Tag(token));}}
-		if (full.size()!=0&&s.charAt(s.length()-1)!=' '){
-			partial=full.remove(full.size()-1);
-		}
-		return getSuggestedTags(full, partial, numberOfResults);
+
+		return getSuggestedTags(parseFullTags(s), parsePartialTag(s),
+				numberOfResults);
 	}
 
-	public ArrayList<Tag> getSuggestedTags(ArrayList<Tag> requiredTags,Tag partial,
-			int numberOfResults) {
+	private Tag parsePartialTag(String s) {
+		if (s.equals("") || s.charAt(s.length() - 1) == ' ') {
+			return new Tag("");
+		}
+		return new Tag(s.substring(s.lastIndexOf(' ') + 1));
+	}
+
+	private ArrayList<Tag> parseFullTags(String s) {
+		ArrayList<Tag> full = new ArrayList<Tag>();
+		if (-1 == s.lastIndexOf(' '))
+			return full;
+		s = s.substring(0, s.lastIndexOf(' '));
+		String[] tokens = s.split(" ");
+		for (String name : tokens) {
+			if (!name.equals(""))
+				full.add(new Tag(name));
+		}
+		return full;
+	}
+
+	public ArrayList<Tag> getSuggestedTags(ArrayList<Tag> requiredTags,
+			Tag partial, int numberOfResults) {
 		PriorityQueue<Tuple<Tag, Integer>> bestTags = new PriorityQueue<Tuple<Tag, Integer>>();
 		for (Tag tag : allTags) {
 			int score = scoreTag(tag, requiredTags, partial);
@@ -118,8 +121,8 @@ public class Backend {
 		}
 		ArrayList<Tag> suggestedTags = new ArrayList<Tag>();
 		while (numberOfResults > 0 && !bestTags.isEmpty()) {
-			Tuple<Tag,Integer> temp=bestTags.poll();
-			if(temp.b>1000){
+			Tuple<Tag, Integer> temp = bestTags.poll();
+			if (temp.b > 1000) {
 				break;
 			}
 			suggestedTags.add(temp.a);
@@ -128,16 +131,15 @@ public class Backend {
 		return suggestedTags;
 	}
 
-	private int scoreTag(Tag tag, ArrayList<Tag> tags,Tag partial) {
+	private int scoreTag(Tag tag, ArrayList<Tag> tags, Tag partial) {
 		HashMap<User, HashMap<Rating, Integer>> aggregate = new HashMap<User, HashMap<Rating, Integer>>();
-		boolean satisfied=false;
+		boolean satisfied = false;
 		int score = 0;
-		if(tags.contains(tag))
-		{
-			score-=10000;
+		if (tags.contains(tag)) {
+			score -= 10000;
 		}
-		if(!tag.satisfies(partial)){
-			score-=10000;
+		if (!tag.satisfies(partial)) {
+			score -= 10000;
 		}
 		for (User user : users) {
 			HashMap<Rating, Integer> temp = new HashMap<Rating, Integer>();
@@ -147,17 +149,17 @@ public class Backend {
 			aggregate.put(user, temp);
 		}
 		for (Item item : items.values()) {
-			if (item.satisfies(tags, tag,partial)) {
+			if (item.satisfies(tags, tag, partial)) {
 				for (User user : users) {
 					HashMap<Rating, Integer> temp = aggregate.get(user);
 					Rating rating = item.ratings.get(user);
 					temp.put(rating, temp.get(rating) + 1);
 				}
-				score+=2;
-				satisfied=true;
+				score += 2;
+				satisfied = true;
 			}
 		}
-		
+
 		TagRatings tagRating = new TagRatings();
 		for (User user : users) {
 			int weight = 1;
@@ -181,7 +183,9 @@ public class Backend {
 					* temp.get(Rating.BAD);
 		}
 
-		if(!satisfied){score-=10000;}//so tags that don't have any items satisfied by them aren't displayed
+		if (!satisfied) {
+			score -= 10000;
+		}// so tags that don't have any items satisfied by them aren't displayed
 		tag.ratings = tagRating;
 		return -score;
 	}
