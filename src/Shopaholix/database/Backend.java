@@ -11,29 +11,28 @@ import android.content.Context;
 
 public class Backend {
 	HashMap<String, Item> items = new HashMap<String, Item>();
-	private Context context;
 	private User me;
 	private HashSet<User> users;
 	private HashSet<Tag> allTags;
 
-	public Backend(Context context) {
-		this.context = context;
+	public Backend() {
 		me = new User("Personal");
 		users = new HashSet<User>();
 		allTags = new HashSet<Tag>();
 		users.add(me);
 	}
 
-	public ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags) {
-		return getSuggestedItems(tags, 5);
+	public ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags,Tag partial) {
+		return getSuggestedItems(tags,partial, 5);
 	}
 
-	public ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags,
+	
+	public ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags, Tag partial,
 			int numberOfResults) {
 		Collection<Item> items = this.items.values();
 		PriorityQueue<Tuple<Item, Integer>> bestItems = new PriorityQueue<Tuple<Item, Integer>>();
 		for (Item item : items) {
-			if (item.satisfies(tags)) {
+			if (item.satisfiesPartial(tags,partial)) {
 				int score = scoreItem(item);
 				bestItems.add(new Tuple<Item, Integer>(item, score));
 			}
@@ -64,15 +63,15 @@ public class Backend {
 
 	}
 
-	public ArrayList<Tag> getSuggestedTags(ArrayList<Tag> requiredTags) {
-		return getSuggestedTags(requiredTags, 5);
+	public ArrayList<Tag> getSuggestedTags(ArrayList<Tag> requiredTags,Tag partial) {
+		return getSuggestedTags(requiredTags,partial, 5);
 	}
 
-	public ArrayList<Tag> getSuggestedTags(ArrayList<Tag> requiredTags,
+	public ArrayList<Tag> getSuggestedTags(ArrayList<Tag> requiredTags,Tag partial,
 			int numberOfResults) {
 		PriorityQueue<Tuple<Tag, Integer>> bestTags = new PriorityQueue<Tuple<Tag, Integer>>();
 		for (Tag tag : allTags) {
-			int score = scoreTag(tag, requiredTags);
+			int score = scoreTag(tag, requiredTags, partial);
 			bestTags.add(new Tuple<Tag, Integer>(tag, score));
 		}
 		ArrayList<Tag> suggestedTags = new ArrayList<Tag>();
@@ -87,12 +86,15 @@ public class Backend {
 		return suggestedTags;
 	}
 
-	private int scoreTag(Tag tag, ArrayList<Tag> tags) {
+	private int scoreTag(Tag tag, ArrayList<Tag> tags,Tag partial) {
 		HashMap<User, HashMap<Rating, Integer>> aggregate = new HashMap<User, HashMap<Rating, Integer>>();
 		boolean satisfied=false;
 		int score = 0;
 		if(tags.contains(tag))
 		{
+			score-=10000;
+		}
+		if(!tag.name.contains(partial.name)){
 			score-=10000;
 		}
 		for (User user : users) {

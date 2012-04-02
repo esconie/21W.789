@@ -32,6 +32,19 @@ public class Item {
 	public boolean satisfies(ArrayList<Tag> requiredTags, Tag requiredTag) {
 		 return satisfies(requiredTags)&&tags.contains(requiredTag);
 	}
+	public boolean satisfiesPartial(ArrayList<Tag> requiredTags, Tag partial){
+		if (!satisfies(requiredTags)){
+			return false;
+		}
+		for(Tag tag:tags){
+			if(tag.name.contains(partial.name))
+				return true;
+		}
+		return false;
+	}
+	public boolean satisfiesPartial(ArrayList<Tag> requiredTags, Tag requiredTag,Tag partial) {
+		 return satisfiesPartial(requiredTags,partial)&&tags.contains(requiredTag);
+	}
 
 	public String toString(){
 		return upc+", "+name+", "+ratings.toString();

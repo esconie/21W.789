@@ -16,7 +16,7 @@ public class BackendTest extends AsyncTask<String, String, String> {
 	@Override
 	protected String doInBackground(String... params) {
 		Log.d("BackendTest","started backend test");
-		Backend backend=new Backend(context);
+		Backend backend=new Backend();
 		String[] upcs={"037000188421","037000230113","037000188438","037000185055","037000185208"};
 		for(String upc:upcs){
 			backend.getItem(upc);
@@ -32,14 +32,17 @@ public class BackendTest extends AsyncTask<String, String, String> {
 		Log.d("BackendTest",backend.getItem(upcs[0]).toString());
 		Log.d("BackendTest",backend.getFamilyMembers().toString());
 		ArrayList<Tag> requiredTags=new ArrayList<Tag>();
-		Log.d("BackendTest",backend.getSuggestedItems(requiredTags,1).toString());
-		Log.d("BackendTest",backend.getSuggestedTags(requiredTags).toString());
+		Log.d("BackendTest",backend.getSuggestedItems(requiredTags,new Tag(""),1).toString());
+		Log.d("BackendTest",backend.getSuggestedTags(requiredTags,new Tag("")).toString());
+		Log.d("BackendTest",backend.getSuggestedItems(requiredTags,new Tag("pot")).toString());
+		Log.d("BackendTest",backend.getSuggestedTags(requiredTags,new Tag("sta")).toString());
+		
 		requiredTags.add(new Tag("potato"));
-		Log.d("BackendTest",backend.getSuggestedItems(requiredTags).toString());
-		Log.d("BackendTest",backend.getSuggestedTags(requiredTags).toString());
+		Log.d("BackendTest",backend.getSuggestedItems(requiredTags,new Tag("")).toString());
+		Log.d("BackendTest",backend.getSuggestedTags(requiredTags,new Tag("")).toString());
 		requiredTags.add(new Tag("original"));
-		Log.d("BackendTest",backend.getSuggestedItems(requiredTags).toString());
-		Log.d("BackendTest",backend.getSuggestedTags(requiredTags).toString());
+		Log.d("BackendTest",backend.getSuggestedItems(requiredTags,new Tag("")).toString());
+		Log.d("BackendTest",backend.getSuggestedTags(requiredTags,new Tag("")).toString());
 		
 		
 		
