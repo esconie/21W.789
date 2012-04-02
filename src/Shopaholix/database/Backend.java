@@ -11,7 +11,7 @@ import android.content.Context;
 import android.util.Log;
 
 public class Backend {
-	static Backend backend=new Backend();
+	public static Backend backend=new Backend();
 	HashMap<String, Item> items = new HashMap<String, Item>();
 	private User me;
 	private HashSet<User> users;
