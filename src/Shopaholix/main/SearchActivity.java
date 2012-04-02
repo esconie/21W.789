@@ -6,12 +6,14 @@ import Shopaholix.database.Backend;
 import Shopaholix.database.Item;
 import Shopaholix.database.ItemRatings.Rating;
 import Shopaholix.database.Tag;
+import Shopaholix.database.User;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -39,7 +41,7 @@ public class SearchActivity extends Activity {
 				results.removeAllViews();
 				for(final Item i: suggestedItems){
 					
-					View itemResult = view.SearchResult(i.name, i.ratings.get("Personal"));
+					View itemResult = view.SearchResult(i.name, i.ratings.get(new User("Personal")));
 					
 					results.addView(itemResult);
 					
@@ -77,10 +79,12 @@ class SearchView extends BaseView{
 		LinearLayout L = LinearLayout();
 		L.setOrientation(LinearLayout.HORIZONTAL);
 				
-			L.addView(DefaultTextView(text));
+			android.widget.TextView T = DefaultTextView(text); L.addView(T);
 			
+				T.setLayoutParams(new LinearLayout.LayoutParams(0, 50, 5));
 			ImageView I = ImageView();
-				I.setLayoutParams(new LinearLayout.LayoutParams(50, 50));
+				Log.d("cow", "myRatingsmoooo " + myRating);
+				I.setLayoutParams(new LinearLayout.LayoutParams(0, 50, 1));
 				switch (myRating){
 					case GOOD: I.setImageResource(R.drawable.green_up); break;
 					case NEUTRAL: I.setImageResource(R.drawable.yellow_mid); break;
