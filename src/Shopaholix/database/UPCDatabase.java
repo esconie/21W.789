@@ -48,7 +48,7 @@ public class UPCDatabase {
         int index = data.indexOf(pattern);
         String name = data.substring(1,index);
         String rest = data.substring(index+3,data.length());
-        String url = data.substring(index+3,rest.indexOf(pattern)+index+2);
+        String url = data.substring(index+3,rest.indexOf(pattern)+index+3);
         //Log.d("aaki",url);
         //Log.d("aaki",name);
         return new Item(upc, name, url, new ItemRatings());

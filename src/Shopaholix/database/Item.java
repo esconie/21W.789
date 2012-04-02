@@ -41,7 +41,7 @@ public class Item {
             
         }
 
-//  public boolean satisfies(ArrayList<Tag> requiredTags) {
+    //  public boolean satisfies(ArrayList<Tag> requiredTags) {
 //      for(Tag tag:requiredTags){
 //          if(!tags.contains(tag))
 //              return false;

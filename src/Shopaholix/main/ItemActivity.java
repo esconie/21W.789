@@ -1,11 +1,20 @@
 package Shopaholix.main;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+
 import Shopaholix.database.Backend;
 import Shopaholix.database.Item;
 import Shopaholix.database.ItemRatings.Rating;
 import Shopaholix.database.User;
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -26,6 +35,8 @@ public class ItemActivity extends Activity {
 	RadioButton greenUp;
 	RadioButton yellowMid;
 	RadioButton redDown;
+	ImageView itempic;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +47,7 @@ public class ItemActivity extends Activity {
         
         Rating myRating = I.ratings.get(new User("Personal"));
         ItemView view = new ItemView(this);
+        itempic = view.ImageView();
         greenUp = view.RadioButton();
         greenUp.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
@@ -58,19 +70,52 @@ public class ItemActivity extends Activity {
         });
         
         
-        setContentView(view.render(greenUp, yellowMid, redDown, I.name, myRating));
+        setContentView(view.render(itempic, greenUp, yellowMid, redDown, I.name, myRating));
+        new DownloadWebPageTask().execute(I.url);
     }
-  
+
+    
+    private class DownloadWebPageTask extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... urls) {
+            String response = "";
+            Bitmap bitmap = null;
+            for (String url : urls) {
+                try {
+                    Log.d("viewer",url);
+                    URL url1 = new URL(url);
+                    URLConnection connection = url1.openConnection();
+                    connection.connect();
+                    InputStream is = connection.getInputStream();
+                    BufferedInputStream bis = new BufferedInputStream(is);
+                    bitmap = BitmapFactory.decodeStream(bis);
+                    bis.close();
+                    is.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            //textView.setText(result);
+            if (result == null) return;
+            itempic.setImageBitmap(result);
+        }
+    }
+
 }
 
 class ItemView extends BaseView{
 	public ItemView(Activity a){super(a);}
 	
-	public View render(RadioButton greenUp, RadioButton yellowMid, RadioButton redDown, String name, Rating myRating){
+	public View render(ImageView itempic, RadioButton greenUp, RadioButton yellowMid, RadioButton redDown, String name, Rating myRating){
 		LinearLayout L = Shell();
 			L.addView(BigTextView(name));
 			
-			L.addView(RateSection(greenUp, yellowMid, redDown, myRating));
+			L.addView(RateSection(itempic, greenUp, yellowMid, redDown, myRating));
 			L.addView(HR());
 			
 			LinearLayout L1 = VerticalLayout(); L.addView(L1);
@@ -83,10 +128,10 @@ class ItemView extends BaseView{
 		return L;
 	}
 	
-	public View RateSection(RadioButton greenUp, RadioButton yellowMid, RadioButton redDown, Rating myRating){
+	public View RateSection(ImageView itempic, RadioButton greenUp, RadioButton yellowMid, RadioButton redDown, Rating myRating){
 		LinearLayout V = HorizontalLayout(); 
-			ImageView I = ImageView(); V.addView(I);
-				I.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
+			V.addView(itempic);
+				itempic.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
 			
 			RadioGroup RG = RadioGroup(); V.addView(RG);
 				RG.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
