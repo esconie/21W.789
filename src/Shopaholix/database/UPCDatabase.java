@@ -53,5 +53,4 @@ public class UPCDatabase {
         //Log.d("aaki",name);
         return new Item(upc, name, url, new ItemRatings());
     }
-}}
 }
