@@ -24,16 +24,16 @@ public class Backend {
 		users.add(me);
 		String[] upcs={"037000188421","037000230113","037000188438","037000185055","037000185208"};
 		for(String upc:upcs){
-			backend.getItem(upc);
+			getItem(upc);
 		}
 		User haoyi=new User("Haoyi");
-		backend.addFamilyMember(haoyi);
-		backend.rateItem(upcs[0], Rating.GOOD);
-		backend.rateItem(upcs[1], Rating.GOOD);
-		backend.rateItem(upcs[3], Rating.NEUTRAL);
-		backend.rateItem(upcs[4], Rating.BAD);
-		backend.rateFamilyItem(upcs[0], haoyi, Rating.GOOD);
-		backend.rateFamilyItem(upcs[1],haoyi,Rating.BAD);
+		addFamilyMember(haoyi);
+		rateItem(upcs[0], Rating.GOOD);
+		rateItem(upcs[1], Rating.GOOD);
+		rateItem(upcs[3], Rating.NEUTRAL);
+		rateItem(upcs[4], Rating.BAD);
+		rateFamilyItem(upcs[0], haoyi, Rating.GOOD);
+		rateFamilyItem(upcs[1],haoyi,Rating.BAD);
 	}
 
 
@@ -46,9 +46,11 @@ public class Backend {
 		String[] tokens = s.split(" ");
 		ArrayList<Tag> full = new ArrayList<Tag>();
 		Tag partial=new Tag("");
+		if(s!=""){
 		for(String token: tokens){ full.add(new Tag(token));}
+		}
 		if (full.size()!=0&&s.charAt(s.length()-1)!=' '){
-			partial=full.get(full.size()-1);
+			partial=full.remove(full.size()-1);
 		}
 		return getSuggestedItems(full, partial, numberOfResults);
 	}
@@ -99,9 +101,10 @@ public class Backend {
 		String[] tokens = s.split(" ");
 		ArrayList<Tag> full = new ArrayList<Tag>();
 		Tag partial=new Tag("");
-		for(String token: tokens){ full.add(new Tag(token));}
+		if(s!=""){
+		for(String token: tokens){ full.add(new Tag(token));}}
 		if (full.size()!=0&&s.charAt(s.length()-1)!=' '){
-			partial=full.get(full.size()-1);
+			partial=full.remove(full.size()-1);
 		}
 		return getSuggestedTags(full, partial, numberOfResults);
 	}
