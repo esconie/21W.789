@@ -22,19 +22,20 @@ public class Item {
 		}
 		
 	}
-	public boolean satisfies(ArrayList<Tag> requiredTags) {
+//	public boolean satisfies(ArrayList<Tag> requiredTags) {
+//		for(Tag tag:requiredTags){
+//			if(!tags.contains(tag))
+//				return false;
+//		}
+//		return true;
+//	}
+//	public boolean satisfies(ArrayList<Tag> requiredTags, Tag requiredTag) {
+//		 return satisfies(requiredTags)&&tags.contains(requiredTag);
+//	}
+	public boolean satisfies(ArrayList<Tag> requiredTags, Tag partial){
 		for(Tag tag:requiredTags){
 			if(!tags.contains(tag))
 				return false;
-		}
-		return true;
-	}
-	public boolean satisfies(ArrayList<Tag> requiredTags, Tag requiredTag) {
-		 return satisfies(requiredTags)&&tags.contains(requiredTag);
-	}
-	public boolean satisfiesPartial(ArrayList<Tag> requiredTags, Tag partial){
-		if (!satisfies(requiredTags)){
-			return false;
 		}
 		for(Tag tag:tags){
 			if(tag.name.contains(partial.name))
@@ -42,8 +43,8 @@ public class Item {
 		}
 		return false;
 	}
-	public boolean satisfiesPartial(ArrayList<Tag> requiredTags, Tag requiredTag,Tag partial) {
-		 return satisfiesPartial(requiredTags,partial)&&tags.contains(requiredTag);
+	public boolean satisfies(ArrayList<Tag> requiredTags, Tag requiredTag,Tag partial) {
+		 return satisfies(requiredTags,partial)&&tags.contains(requiredTag);
 	}
 
 	public String toString(){

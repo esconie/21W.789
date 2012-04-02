@@ -32,7 +32,7 @@ public class Backend {
 		Collection<Item> items = this.items.values();
 		PriorityQueue<Tuple<Item, Integer>> bestItems = new PriorityQueue<Tuple<Item, Integer>>();
 		for (Item item : items) {
-			if (item.satisfiesPartial(tags,partial)) {
+			if (item.satisfies(tags,partial)) {
 				int score = scoreItem(item);
 				bestItems.add(new Tuple<Item, Integer>(item, score));
 			}
@@ -105,7 +105,7 @@ public class Backend {
 			aggregate.put(user, temp);
 		}
 		for (Item item : items.values()) {
-			if (item.satisfies(tags, tag)) {
+			if (item.satisfies(tags, tag,partial)) {
 				for (User user : users) {
 					HashMap<Rating, Integer> temp = aggregate.get(user);
 					Rating rating = item.ratings.get(user);
