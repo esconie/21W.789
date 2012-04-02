@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.widget.*;
 import Shopaholix.scanning.*;
 
@@ -52,8 +51,9 @@ public class ScanActivity extends Activity {
 	      String contents = result.getContents();
 	      if (contents != null) {
 	        showDialog(R.string.app_name, result.toString());
-	      } else {
-	        showDialog(R.string.app_name, "Failure");
+			Intent ItemIntent = new Intent(this, ItemActivity.class);
+			ItemIntent.putExtra("upc", contents);
+			startActivityForResult(ItemIntent, 10);
 	      }
 	    }
 	  }
