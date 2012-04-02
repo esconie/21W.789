@@ -34,20 +34,26 @@ public class Backend {
 		backend.rateItem(upcs[4], Rating.BAD);
 		backend.rateFamilyItem(upcs[0], haoyi, Rating.GOOD);
 		backend.rateFamilyItem(upcs[1],haoyi,Rating.BAD);
-		Log.d("BackendTest",backend.getItem(upcs[0]).toString());
-		Log.d("BackendTest",backend.getFamilyMembers().toString());
-		ArrayList<Tag> requiredTags=new ArrayList<Tag>();
-		Log.d("BackendTest",backend.getSuggestedItems(requiredTags,new Tag(""),1).toString());
-		Log.d("BackendTest",backend.getSuggestedTags(requiredTags,new Tag("")).toString());
-		Log.d("BackendTest",backend.getSuggestedItems(requiredTags,new Tag("pot")).toString());
-		Log.d("BackendTest",backend.getSuggestedTags(requiredTags,new Tag("sta")).toString());
 	}
 
-	public ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags,Tag partial) {
-		return getSuggestedItems(tags,partial, 5);
+
+	public ArrayList<Item> getSuggestedItems(String s) {
+		return getSuggestedItems(s,5);
 	}
 
 	
+	private ArrayList<Item> getSuggestedItems(String s, int numberOfResults) {
+		String[] tokens = s.split(" ");
+		ArrayList<Tag> full = new ArrayList<Tag>();
+		Tag partial=new Tag("");
+		for(String token: tokens){ full.add(new Tag(token));}
+		if (full.size()!=0&&s.charAt(s.length()-1)!=' '){
+			partial=full.get(full.size()-1);
+		}
+		return getSuggestedItems(full, partial, numberOfResults);
+	}
+
+
 	public ArrayList<Item> getSuggestedItems(ArrayList<Tag> tags, Tag partial,
 			int numberOfResults) {
 		Collection<Item> items = this.items.values();
@@ -84,8 +90,20 @@ public class Backend {
 
 	}
 
-	public ArrayList<Tag> getSuggestedTags(ArrayList<Tag> requiredTags,Tag partial) {
-		return getSuggestedTags(requiredTags,partial, 5);
+	public ArrayList<Tag> getSuggestedTags(String s) {
+		return getSuggestedTags(s,5);
+	}
+
+	
+	private ArrayList<Tag> getSuggestedTags(String s, int numberOfResults) {
+		String[] tokens = s.split(" ");
+		ArrayList<Tag> full = new ArrayList<Tag>();
+		Tag partial=new Tag("");
+		for(String token: tokens){ full.add(new Tag(token));}
+		if (full.size()!=0&&s.charAt(s.length()-1)!=' '){
+			partial=full.get(full.size()-1);
+		}
+		return getSuggestedTags(full, partial, numberOfResults);
 	}
 
 	public ArrayList<Tag> getSuggestedTags(ArrayList<Tag> requiredTags,Tag partial,
