@@ -27,7 +27,7 @@ public class ItemActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        backend = new Backend((Context)this);
+        backend = Backend.backend;
         
         upc = savedInstanceState.getString("upc");
         I = backend.getItem(upc);

@@ -28,15 +28,13 @@ public class SearchActivity extends Activity {
         final EditText searchBar = view.EditText();
     	final LinearLayout results = view.VerticalLayout();
         setContentView(view.render(searchBar, results));
-        final Backend backend = new Backend((Context)this);
+        final Backend backend = Backend.backend;
         final Activity that = this;
         searchBar.addTextChangedListener(new TextWatcher(){
 			public void afterTextChanged(Editable s) {
-				String[] tokens = s.toString().split(" ");
-				ArrayList<Tag> ALT = new ArrayList<Tag>();
-				for(String token: tokens){ ALT.add(new Tag(token)); }
-				ArrayList<Item> suggestedItems = backend.getSuggestedItems(ALT);
-				ArrayList<Tag> suggestedTags = backend.getSuggestedTags(ALT);
+
+				ArrayList<Item> suggestedItems = backend.getSuggestedItems(s.toString());
+				ArrayList<Tag> suggestedTags = backend.getSuggestedTags(s.toString());
 				
 				results.removeAllViews();
 				for(final Item i: suggestedItems){

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.widget.*;
 import Shopaholix.scanning.*;
 
@@ -29,7 +30,15 @@ public class ScanActivity extends Activity {
 				startActivityForResult(intent, IntentIntegrator.REQUEST_CODE);
 			}
 		});
-		setContentView(view.render(B));
+		EditText E = view.EditText();
+		final Activity that = this;
+		E.setOnFocusChangeListener(new OnFocusChangeListener(){
+			public void onFocusChange(View view, boolean b){
+				Intent myIntent = new Intent(view.getContext(), SearchActivity.class);
+                that.startActivity(myIntent);
+			}
+		});
+		setContentView(view.render(E, B));
 	}
 	
 	  @Override
@@ -59,13 +68,14 @@ class ScanView extends BaseView {
 		super(a);
 	}
 
-	public View render(Button B) {
+	public View render(EditText E, Button B) {
 		LinearLayout L = Shell();
-		L.addView(BigTextView("Scan Item"));
-
-		L.addView(B);
-		B.setText("Scan Item");
-
+			L.addView(E);
+			L.addView(BigTextView("Scan Item"));
+			
+			L.addView(B);
+				B.setText("Scan Item");
+			
 		return L;
 	}
 
