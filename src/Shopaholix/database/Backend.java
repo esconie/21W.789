@@ -77,7 +77,7 @@ public class Backend {
 		ArrayList<Tag> suggestedTags = new ArrayList<Tag>();
 		while (numberOfResults > 0 && !bestTags.isEmpty()) {
 			Tuple<Tag,Integer> temp=bestTags.poll();
-			if(temp.b<-1000){
+			if(temp.b>1000){
 				break;
 			}
 			suggestedTags.add(temp.a);
@@ -94,7 +94,7 @@ public class Backend {
 		{
 			score-=10000;
 		}
-		if(!tag.name.contains(partial.name)){
+		if(!tag.satisfies(partial)){
 			score-=10000;
 		}
 		for (User user : users) {

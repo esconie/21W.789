@@ -16,4 +16,8 @@ public class Tag {
 	public int hashCode(){
 		return name.hashCode();
 	}
+	public boolean satisfies(Tag partial) {
+		return name.contains(partial.name);
+	}
+	
 }

@@ -38,7 +38,7 @@ public class Item {
 				return false;
 		}
 		for(Tag tag:tags){
-			if(tag.name.contains(partial.name))
+			if(tag.satisfies(partial))
 				return true;
 		}
 		return false;
