@@ -12,6 +12,7 @@ import Shopaholix.database.Backend;
 import Shopaholix.database.Item;
 import Shopaholix.database.ItemRatings.Rating;
 import Shopaholix.database.User;
+import Shopaholix.database.UserLog;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -48,7 +49,7 @@ public class ItemActivity extends Activity {
         
         upc = this.getIntent().getExtras().getString("upc");
         I = backend.getItem(upc);
-        
+        UserLog.appendLog("Viewing Item Screen for item: " + I.name + ", upc: " + I.upc);    
         Rating myRating = I.ratings.get(new User("Personal"));
         ItemView view = new ItemView(this);
         itempic = view.ImageView();
@@ -56,6 +57,7 @@ public class ItemActivity extends Activity {
         greenUp.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
         		backend.rateItem(upc, Rating.GOOD);
+        		UserLog.appendLog("Giving a GOOD rating to item: " + I.name + ", upc: " + I.upc);
         	}
         });
         
@@ -63,6 +65,7 @@ public class ItemActivity extends Activity {
         yellowMid.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
         		backend.rateItem(upc, Rating.NEUTRAL);
+        		UserLog.appendLog("Giving a NEUTRAL rating to item: " + I.name + ", upc: " + I.upc);
         	}
         });
         
@@ -70,6 +73,7 @@ public class ItemActivity extends Activity {
         redDown.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
         		backend.rateItem(upc, Rating.BAD);
+        		UserLog.appendLog("Giving a BAD rating to item: " + I.name + ", upc: " + I.upc);
         	}
         });
         
