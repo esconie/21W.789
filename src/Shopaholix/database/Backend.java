@@ -28,7 +28,7 @@ import android.util.Log;
 
 public class Backend implements Serializable {
 	private static boolean backendLoaded = false;
-	public static Backend backend = new Backend();
+	private static Backend backend = new Backend();
 	public HashMap<String, Item> items = new HashMap<String, Item>();
 	public User me;
 	public HashMap<String, User> users;
