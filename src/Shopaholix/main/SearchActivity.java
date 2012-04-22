@@ -7,8 +7,8 @@ import Shopaholix.database.Item;
 import Shopaholix.database.ItemRatings.Rating;
 import Shopaholix.database.Tag;
 import Shopaholix.database.User;
+import Shopaholix.database.UserLog;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,8 +16,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 public class SearchActivity extends Activity {
@@ -82,6 +82,7 @@ public class SearchActivity extends Activity {
 						public void onClick(View view){
 							Intent myIntent = new Intent(that, ItemActivity.class);
 							myIntent.putExtra("upc", i.upc);
+							UserLog.appendLog("Searched for item: " + i.name + ", upc: " + i.upc);
 			                that.startActivityForResult(myIntent, 10);
 						}
 					});

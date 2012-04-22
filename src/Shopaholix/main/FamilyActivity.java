@@ -9,6 +9,7 @@ import Shopaholix.database.Backend;
 import Shopaholix.database.Item;
 import Shopaholix.database.ItemRatings.Rating;
 import Shopaholix.database.User;
+import Shopaholix.database.UserLog;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,6 +39,7 @@ public class FamilyActivity extends Activity {
 	LinearLayout familyList;
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	UserLog.appendLog("Viewing Family Screen");
         super.onCreate(savedInstanceState);
         backend = Backend.backend;
         
