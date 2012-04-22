@@ -307,6 +307,9 @@ public class Backend {
 		
 		@Override
 		protected void onPostExecute(ArrayList<String> result) {
+			if (result==null) {
+				return;
+			}
 			String id = "([1-9][0-9]{7}|[0-9])";
 			String upc = "([0-9]+)";
 			String getUpdate = "(GET_UPDATE " + id + " [0-9]+)";
