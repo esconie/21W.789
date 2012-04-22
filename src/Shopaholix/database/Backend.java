@@ -29,11 +29,11 @@ public class Backend {
 	public static Backend backend = new Backend();
 	HashMap<String, Item> items = new HashMap<String, Item>();
 	private User me;
-	private HashMap<Integer, User> users;
+	private HashMap<String, User> users;
 	private HashSet<Tag> allTags;
 	private ArrayList<String> updates = new ArrayList<String>();
 	
-	private Integer ID;
+	public String ID;
 	Long lastTime;
 
 	public Backend() {
@@ -42,16 +42,16 @@ public class Backend {
 		new ServerConnect().execute(lastTime);
 		
 		me = new User("Personal");
-		users = new HashMap<Integer,User>();
+		users = new HashMap<String,User>();
 		allTags = new HashSet<Tag>();
-		users.put(0,me);
+		users.put("Me@SHOP",me);
 		String[] upcs = { "037000188421", "037000230113", "037000188438",
 				"037000185055", "037000185208" };
 		for (String upc : upcs) {
 			getItem(upc);
 		}
 		User haoyi = new User("Haoyi");
-		addFamilyMember(haoyi,1);
+		addFamilyMember(haoyi,"HAOYI@SHOPAHOLIX");
 		rateItem(upcs[0], Rating.GOOD);
 		rateItem(upcs[1], Rating.GOOD);
 		rateItem(upcs[3], Rating.NEUTRAL);
@@ -237,7 +237,7 @@ public class Backend {
 		items.get(UPC).ratings.put(user, rating);
 	}
 
-	public void addFamilyMember(User user, Integer id) {
+	public void addFamilyMember(User user, String id) {
 		String updateString = "MEMBER_UPDATE "+0+" "+ID+" true "+new Date().getTime();
 		updates.add(updateString);
 		
@@ -310,7 +310,7 @@ public class Backend {
 			if (result==null) {
 				return;
 			}
-			String id = "([1-9][0-9]{7}|[0-9])";
+			String id = ".+@.+";
 			String upc = "([0-9]+)";
 			String getUpdate = "(GET_UPDATE " + id + " [0-9]+)";
 			String memberUpdate = "(MEMBER_UPDATE " + id + " " + id + " (true|false)) [0-9]+";
@@ -318,11 +318,11 @@ public class Backend {
 
 			for (String update: result) {
 				if (update.matches(id)) {
-					ID = Integer.parseInt(update);
+					ID = update;
 				} else if (update.matches(memberUpdate)) {
 					String[] args = update.split(" ");
-					Integer newID = Integer.parseInt(args[2]);
-					if (newID != ID) {
+					String newID = args[2];
+					if (!newID.equals(ID)) {
 						Boolean add = Boolean.parseBoolean(args[3]);
 						if (add) {
 							users.put(newID, new User("server"));
@@ -334,8 +334,8 @@ public class Backend {
 					}					
 				} else if (update.matches(ratingUpdate)) {
 					String[] args = update.split(" ");
-					Integer newID = Integer.parseInt(args[2]);
-					if (newID == ID) {
+					String newID = args[2];
+					if (newID.equals(ID)) {
 						rateItem(args[1], Rating.valueOf(args[2]));
 					} else {
 						User user = users.get(newID);
