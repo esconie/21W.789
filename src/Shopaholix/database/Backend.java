@@ -27,7 +27,7 @@ import android.util.Log;
  */
 
 public class Backend implements Serializable {
-	private static boolean backendLoaded = true;
+	private static boolean backendLoaded = false;
 	private static Backend backend = new Backend();
 	public HashMap<String, Item> items = new HashMap<String, Item>();
 	public User me;
@@ -100,7 +100,9 @@ public class Backend implements Serializable {
 			}
 			throw new Exception();
 		} catch (Exception e) {
-			return new Backend();
+			backend = new Backend();
+			backend.setContext(c);
+			return backend;
 		}
 	}
 	
@@ -293,7 +295,7 @@ public class Backend implements Serializable {
 		users.put(id,user);
 	}
 
-	public void removeFamilyMember(Integer userID) {
+	public void removeFamilyMember(String userID) {
 		String updateString = "MEMBER_UPDATE "+0+" "+ID+" false "+new Date().getTime();
 		updates.add(updateString);
 		users.remove(userID);
