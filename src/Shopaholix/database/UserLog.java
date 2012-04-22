@@ -24,7 +24,7 @@ public class UserLog {
 	}
 	
 	private static String readLogAsString() throws java.io.IOException{
-		File logFile = new File(Environment.getExternalStorageDirectory(), Backend.backend.ID + ".log");
+		File logFile = new File(Environment.getExternalStorageDirectory(), Backend.getBackend(null).ID + ".log");//TODO:fix this passing of null pointer
 	    byte[] buffer = new byte[(int) logFile.length()];
 	    BufferedInputStream f = null;
 	    try {
@@ -37,7 +37,7 @@ public class UserLog {
 	}
 	
 	public static void appendLog(String text) {
-		File logFile = new File(Environment.getExternalStorageDirectory(), Backend.backend.ID + ".log");
+		File logFile = new File(Environment.getExternalStorageDirectory(), Backend.getBackend(null).ID + ".log");//TODO: fix this passing of null pointer
 		if (!logFile.exists()) {
 			try {
 				logFile.createNewFile();

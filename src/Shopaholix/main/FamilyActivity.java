@@ -41,7 +41,7 @@ public class FamilyActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	UserLog.appendLog("Viewing Family Screen");
         super.onCreate(savedInstanceState);
-        backend = Backend.backend;
+        backend = Backend.getBackend(this);
         
         final FamilyView view = new FamilyView(this);
       
