@@ -184,9 +184,9 @@ class ItemView extends BaseView{
 				Log.d("ooo",item.toString());
 				Log.d("ooo",item.ratings.toString());
 				Log.d("ooo",name);
-				Log.d("ooo",item.ratings.get("Haoyi").toString());
+				//Log.d("ooo",item.ratings.get("Haoyi").toString());
 				
-				switch (item.ratings.get(name)) {
+				switch (item.ratings.get(new User(name))) {
 				case GOOD:
 					drawing = R.drawable.green_up;
 					break;
