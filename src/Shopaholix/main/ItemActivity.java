@@ -4,12 +4,16 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 import Shopaholix.database.Backend;
 import Shopaholix.database.Item;
 import Shopaholix.database.ItemRatings.Rating;
 import Shopaholix.database.User;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -70,7 +74,7 @@ public class ItemActivity extends Activity {
         });
         
         
-        setContentView(view.render(itempic, greenUp, yellowMid, redDown, I.name, myRating));
+        setContentView(view.render(itempic, greenUp, yellowMid, redDown, I.name, myRating, this.getApplicationContext(),I));
         new DownloadWebPageTask().execute(I.url);
     }
 
@@ -109,9 +113,12 @@ public class ItemActivity extends Activity {
 }
 
 class ItemView extends BaseView{
+	Backend backend;
+	HashMap<String, User> users;
+	
 	public ItemView(Activity a){super(a);}
 	
-	public View render(ImageView itempic, RadioButton greenUp, RadioButton yellowMid, RadioButton redDown, String name, Rating myRating){
+	public View render(ImageView itempic, RadioButton greenUp, RadioButton yellowMid, RadioButton redDown, String name, Rating myRating, Context c, Item item){
 		LinearLayout L = Shell();
 			L.addView(BigTextView(name));
 			
@@ -119,9 +126,12 @@ class ItemView extends BaseView{
 			L.addView(HR());
 			
 			LinearLayout L1 = VerticalLayout(); L.addView(L1);
-				L1.addView(UserResult("Aakanksha"));
-				L1.addView(UserResult("Danny"));
-				
+				//L1.addView(UserResult("Aakanksha"));
+				//L1.addView(UserResult("Danny"));
+				backend = Backend.getBackend(c);
+				for (User u: backend.users.values()) {
+					L1.addView(UserResult(u.name,item));
+				}
 			L.addView(HR());
 			
 			L.addView(BigTextView("Public Opinion 74%"));
@@ -158,7 +168,7 @@ class ItemView extends BaseView{
 		return V;
 	}
 	
-	public View UserResult(String name){
+	public View UserResult(String name, Item item){
 		LinearLayout L = HorizontalLayout();
 			TextView T = DefaultTextView(name); L.addView(T);
 			T.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
@@ -166,8 +176,27 @@ class ItemView extends BaseView{
 			
 			ImageView I = ImageView(); L.addView(I);
 				I.setLayoutParams(new LinearLayout.LayoutParams(0, 50, 1));
-				I.setImageResource(R.drawable.green_up);
-			
+				int drawing;
+				Log.d("ooo",item.toString());
+				Log.d("ooo",item.ratings.toString());
+				Log.d("ooo",name);
+				Log.d("ooo",item.ratings.get("Haoyi").toString());
+				
+				switch (item.ratings.get(name)) {
+				case GOOD:
+					drawing = R.drawable.green_up;
+					break;
+				case BAD:
+					drawing = R.drawable.red_down;
+					break;
+				case NEUTRAL:
+					drawing = R.drawable.yellow_mid;
+				default:
+					// TODO: change to no pic
+					drawing = R.drawable.yellow_mid;					
+				}
+				
+				I.setImageResource(drawing);
 		return L;
 	}
 	
