@@ -295,7 +295,7 @@ public class Backend implements Serializable {
 		users.put(id,user);
 	}
 
-	public void removeFamilyMember(Integer userID) {
+	public void removeFamilyMember(String userID) {
 		String updateString = "MEMBER_UPDATE "+0+" "+ID+" false "+new Date().getTime();
 		updates.add(updateString);
 		users.remove(userID);
