@@ -16,7 +16,7 @@ public class BackendTest extends AsyncTask<String, String, String> {
 	@Override
 	protected String doInBackground(String... params) {
 		Log.d("BackendTest","started backend test");
-		Backend backend=Backend.backend;
+		Backend backend=Backend.getBackend(this.context);
 		ArrayList<Tag> requiredTags=new ArrayList<Tag>();
 		Log.d("BackendTest",backend.getSuggestedItems("").toString());
 		Log.d("BackendTest",backend.getSuggestedTags("").toString());

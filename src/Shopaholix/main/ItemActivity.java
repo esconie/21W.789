@@ -45,7 +45,7 @@ public class ItemActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        backend = Backend.backend;
+        backend = Backend.getBackend(this);
         
         upc = this.getIntent().getExtras().getString("upc");
         I = backend.getItem(upc);
@@ -195,6 +195,7 @@ class ItemView extends BaseView{
 					break;
 				case NEUTRAL:
 					drawing = R.drawable.yellow_mid;
+					break;
 				default:
 					// TODO: change to no pic
 					drawing = R.drawable.yellow_mid;					

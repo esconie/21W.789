@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 public class SearchActivity extends Activity {
     /** Called when the activity is first created. */
-	Backend backend = Backend.backend;
+	Backend backend = Backend.getBackend(this);
 	SearchView view;
 	LinearLayout results;
 	Button familyButton;
