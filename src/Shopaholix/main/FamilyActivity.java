@@ -51,22 +51,20 @@ public class FamilyActivity extends Activity {
         
         searchBar.setOnEditorActionListener(new OnEditorActionListener(){
         	public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
-    			familyList.removeAllViews();
-    			ImageView I1 = view.ImageView();
-    			I1.setOnClickListener(new OnClickListener(){
-					public void onClick(View arg0) {
-						//...
-					}
-    			});
+        		familyList.removeAllViews();
+        		
+        		backend.addFamilyMember(new User(v.getText().toString()), v.getText().toString());
+        		for(User u : backend.users.values()){
+        			ImageView I = view.ImageView();
+        			I.setOnClickListener(new OnClickListener(){
+    					public void onClick(View arg0) {
+							//backend.removeFamilyMember(userID)
+    					}
+        			});
+        			familyList.addView(view.FamilyResult(I, v.getText().toString()));
+        		}
     			
-    			ImageView I2 = view.ImageView();
-    			I2.setOnClickListener(new OnClickListener(){
-					public void onClick(View arg0) {
-						//...
-					}
-    			});
-    			familyList.addView(view.FamilyResult(I1, "Haoyi"));
-    			familyList.addView(view.FamilyResult(I2, "Danny"));
+    			
     			return true;
         	}
         });
