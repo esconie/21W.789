@@ -225,7 +225,7 @@ public class Backend implements Serializable {
 				for (User user : users.values()) {
 					HashMap<Rating, Integer> temp = aggregate.get(user);
 					Rating rating = item.ratings.get(user);
-					//temp.put(rating, temp.get(rating) + 1);
+					temp.put(rating, temp.get(rating) + 1);
 				}
 				score += 2;
 				satisfied = true;
