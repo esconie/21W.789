@@ -1,9 +1,7 @@
 package Shopaholix.database;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
+
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,8 +11,11 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 
 import Shopaholix.database.ItemRatings.Rating;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 
 /**
@@ -25,13 +26,15 @@ import android.util.Log;
  * new ServerConnect.execute(lastTime);
  */
 
-public class Backend {
+public class Backend implements Serializable {
+	private static boolean backendLoaded = false;
 	public static Backend backend = new Backend();
-	HashMap<String, Item> items = new HashMap<String, Item>();
-	private User me;
-	private HashMap<String, User> users;
-	private HashSet<Tag> allTags;
-	private ArrayList<String> updates = new ArrayList<String>();
+	public HashMap<String, Item> items = new HashMap<String, Item>();
+	public User me;
+	public HashMap<String, User> users;
+	public HashSet<Tag> allTags;
+	public ArrayList<String> updates = new ArrayList<String>();
+	private Context context;
 	
 	public String ID;
 	Long lastTime;
@@ -44,7 +47,7 @@ public class Backend {
 		me = new User("Personal");
 		users = new HashMap<String,User>();
 		allTags = new HashSet<Tag>();
-		users.put("Me@SHOP",me);
+		
 		String[] upcs = { "037000188421", "037000230113", "037000188438",
 				"037000185055", "037000185208" };
 		for (String upc : upcs) {
@@ -63,7 +66,53 @@ public class Backend {
 	public ArrayList<Item> getSuggestedItems(String s) {
 		return getSuggestedItems(s, 5);
 	}
+	
+	
+	public void setContext(Context c) {
+		context = c;
+		AccountManager accountManager = AccountManager.get(c);
 
+	    Account[] accounts =
+	    accountManager.getAccountsByType("com.google");
+		
+		users.put(accounts[0].name,me);		
+		ID = accounts[0].name;
+	}
+	
+	public static Backend getBackend(Context c) {
+		if (backendLoaded) {
+			return backend;
+		} else {
+			backend = readBackend(c);
+			backendLoaded = true;
+			return backend;
+		}
+	}
+	
+	private static Backend readBackend(Context c) {
+		try {
+			File f;
+			if ((f = new File(Environment.getExternalStorageDirectory(),"/Shopaholix/shop.bak")).isFile()) {
+				ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
+				backend = (Backend) in.readObject();
+				backend.new ServerConnect().execute(backend.lastTime);
+				return backend;
+			}
+			throw new Exception();
+		} catch (Exception e) {
+			return new Backend();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void writeBackend(Context c) throws IOException {
+		backend.new ServerUpdate().execute(backend.updates);
+        new File(Environment.getExternalStorageDirectory(),"/Shopaholix/").mkdir();
+        FileOutputStream file = new FileOutputStream(new File(Environment.getExternalStorageDirectory(), "/Shopaholix/shop.bak"));
+        ObjectOutputStream output = new ObjectOutputStream(file);
+        output.writeObject(backend);
+	}
+	
 	private ArrayList<Item> getSuggestedItems(String s, int numberOfResults) {
 		return getSuggestedItems(parseFullTags(s), parsePartialTag(s),
 				numberOfResults);
@@ -275,8 +324,9 @@ public class Backend {
 		@Override
 		protected ArrayList<String> doInBackground(Long... arg0) {
 			String input = "";
+			// arg0[0] is the time 
 			if (arg0[0] == 0) {
-				input = "NEWUSER";
+				input = "NEWUSER "+ID;
 			} else {
 				input = "GET_UPDATE "+ID+ " "+arg0[0];
 			}
@@ -325,7 +375,7 @@ public class Backend {
 					if (!newID.equals(ID)) {
 						Boolean add = Boolean.parseBoolean(args[3]);
 						if (add) {
-							users.put(newID, new User("server"));
+							users.put(newID, new User(newID));
 						}
 						else {
 							users.remove(newID);

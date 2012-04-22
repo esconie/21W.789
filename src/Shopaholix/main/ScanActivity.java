@@ -1,13 +1,17 @@
 package Shopaholix.main;
 
+import Shopaholix.database.UserLog;
+import Shopaholix.scanning.IntentIntegrator;
+import Shopaholix.scanning.IntentResult;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.*;
-import Shopaholix.scanning.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 public class ScanActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -52,6 +56,7 @@ public class ScanActivity extends Activity {
 	      if (contents != null) {
 			Intent ItemIntent = new Intent(this, ItemActivity.class);
 			ItemIntent.putExtra("upc", contents);
+			UserLog.appendLog("Scanned for upc: " + contents);
 			startActivityForResult(ItemIntent, 10);
 	      }
 	    }
