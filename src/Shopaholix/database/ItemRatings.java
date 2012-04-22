@@ -2,6 +2,8 @@ package Shopaholix.database;
 
 import java.util.HashMap;
 
+import android.util.Log;
+
 import Shopaholix.database.ItemRatings.Rating;
 
 public class ItemRatings extends HashMap<User,Rating> {
@@ -9,11 +11,16 @@ public class ItemRatings extends HashMap<User,Rating> {
 		UNRATED, BAD, NEUTRAL, GOOD
 	}
 	public Rating get(User user){
+		Log.d("ooo",user.toString());
+		Rating r = null;
 		if(containsKey(user)){
-			return super.get(user);
+			r = super.get(user);
 		}
-		else{
-			return Rating.UNRATED;
+		if (r!=null) {
+			Log.d("ooo",r.toString());
+			return r;
 		}
+		Log.d("ooo",Rating.UNRATED.toString());
+		return Rating.UNRATED;
 	}
 }

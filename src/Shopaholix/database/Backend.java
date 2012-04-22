@@ -27,7 +27,7 @@ import android.util.Log;
  */
 
 public class Backend implements Serializable {
-	private static boolean backendLoaded = false;
+	private static boolean backendLoaded = true;
 	private static Backend backend = new Backend();
 	public HashMap<String, Item> items = new HashMap<String, Item>();
 	public User me;
@@ -225,7 +225,7 @@ public class Backend implements Serializable {
 				for (User user : users.values()) {
 					HashMap<Rating, Integer> temp = aggregate.get(user);
 					Rating rating = item.ratings.get(user);
-					temp.put(rating, temp.get(rating) + 1);
+					//temp.put(rating, temp.get(rating) + 1);
 				}
 				score += 2;
 				satisfied = true;
