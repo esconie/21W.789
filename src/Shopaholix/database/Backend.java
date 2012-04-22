@@ -29,11 +29,11 @@ import android.util.Log;
 public class Backend implements Serializable {
 	private static boolean backendLoaded = false;
 	public static Backend backend = new Backend();
-	HashMap<String, Item> items = new HashMap<String, Item>();
-	private User me;
-	private HashMap<String, User> users;
-	private HashSet<Tag> allTags;
-	private ArrayList<String> updates = new ArrayList<String>();
+	public HashMap<String, Item> items = new HashMap<String, Item>();
+	public User me;
+	public HashMap<String, User> users;
+	public HashSet<Tag> allTags;
+	public ArrayList<String> updates = new ArrayList<String>();
 	private Context context;
 	
 	public String ID;
@@ -79,7 +79,7 @@ public class Backend implements Serializable {
 		ID = accounts[0].name;
 	}
 	
-	public Backend getBackend(Context c) {
+	public static Backend getBackend(Context c) {
 		if (backendLoaded) {
 			return backend;
 		} else {
@@ -375,7 +375,7 @@ public class Backend implements Serializable {
 					if (!newID.equals(ID)) {
 						Boolean add = Boolean.parseBoolean(args[3]);
 						if (add) {
-							users.put(newID, new User("server"));
+							users.put(newID, new User(newID));
 						}
 						else {
 							users.remove(newID);
