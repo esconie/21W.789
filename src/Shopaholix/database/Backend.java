@@ -292,7 +292,7 @@ public class Backend implements Serializable {
 		String updateString = "RATING_UPDATE "+UPC+" "+ID+" "+rating.toString()+" "+new Date().getTime();
 		updates.add(updateString);
 		items.get(UPC).ratings.put(me, rating);
-		backend.new ServerUpdate().execute(backend.updates);
+		new ServerUpdate().execute(updates);
 		new ServerConnect().execute(lastTime);
 
 	}
@@ -304,9 +304,9 @@ public class Backend implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void addFamilyMember(User user, String id) {
 		String updateString = "MEMBER_UPDATE "+0+" "+ID+" true "+new Date().getTime();
-		updates.add(updateString);		
+		updates.add(updateString);
 		users.put(id,user);
-		backend.new ServerUpdate().execute(backend.updates);
+		new ServerUpdate().execute(updates);
 		new ServerConnect().execute(lastTime);
 
 	}
@@ -316,7 +316,7 @@ public class Backend implements Serializable {
 		String updateString = "MEMBER_UPDATE "+0+" "+ID+" false "+new Date().getTime();
 		updates.add(updateString);
 		users.remove(userID);
-		backend.new ServerUpdate().execute(backend.updates);
+		new ServerUpdate().execute(updates);
 		new ServerConnect().execute(lastTime);
 
 	}
