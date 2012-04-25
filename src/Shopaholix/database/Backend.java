@@ -354,7 +354,7 @@ public class Backend implements Serializable {
 			}
 			input +="\n";			
 			try {
-				Socket sock = new Socket("localhost", 789);
+				Socket sock = new Socket("23.21.127.158", 789);
 		        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
 		        //SEND REQUEST AND PRINT RESPONSE
@@ -427,7 +427,7 @@ public class Backend implements Serializable {
 		@Override
 		protected Void doInBackground(ArrayList<String>... arg0) {			
 			try {
-				Socket sock = new Socket("localhost", 789);
+				Socket sock = new Socket("23.21.127.158", 789);
 		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
 		        //SEND REQUEST AND PRINT RESPONSE
 		        String zeroID = "(RATING_UPDATE [0-9]+ 0 (GOOD|BAD|NEUTRAL) [0-9]+)";
