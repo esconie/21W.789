@@ -1,9 +1,10 @@
 package Shopaholix.database;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class Item {
+public class Item implements Serializable {
     public String upc;
     public String name;
     public HashSet<Tag> tags;

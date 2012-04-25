@@ -1,12 +1,13 @@
 package Shopaholix.database;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import android.util.Log;
 
 import Shopaholix.database.ItemRatings.Rating;
 
-public class TagRatings extends HashMap<User,Rating> {
+public class TagRatings extends HashMap<User,Rating> implements Serializable {
 	public Rating get(User user){
 		Log.d("ooo",user.toString());
 		Shopaholix.database.ItemRatings.Rating r = null;
