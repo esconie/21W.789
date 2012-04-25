@@ -71,6 +71,7 @@ public class Backend implements Serializable {
 	
 	public void setContext(Context c) {
 		context = c;
+
 		try{
 			AccountManager accountManager = AccountManager.get(c);
 	
@@ -84,6 +85,7 @@ public class Backend implements Serializable {
 			users.put(id,me);		
 			ID = id;
 		}
+
 	}
 	
 	public static Backend getBackend(Context c) {
@@ -276,7 +278,7 @@ public class Backend implements Serializable {
 			return items.get(upc);
 		} else {
 			Item item = UPCDatabase.lookupByUPC(upc);
-
+			if(item==null) return null;
 			items.put(upc, item);
 			for (Tag tag : item.tags) {
 				allTags.add(tag);
@@ -285,27 +287,38 @@ public class Backend implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void rateItem(String UPC, Rating rating) {
 		String updateString = "RATING_UPDATE "+UPC+" "+ID+" "+rating.toString()+" "+new Date().getTime();
 		updates.add(updateString);
 		items.get(UPC).ratings.put(me, rating);
+		backend.new ServerUpdate().execute(backend.updates);
+		new ServerConnect().execute(lastTime);
+
 	}
 
 	public void rateFamilyItem(String UPC, User user, Rating rating) {
 		items.get(UPC).ratings.put(user, rating);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void addFamilyMember(User user, String id) {
 		String updateString = "MEMBER_UPDATE "+0+" "+ID+" true "+new Date().getTime();
-		updates.add(updateString);
-		
+		updates.add(updateString);		
 		users.put(id,user);
+		backend.new ServerUpdate().execute(backend.updates);
+		new ServerConnect().execute(lastTime);
+
 	}
 
+	@SuppressWarnings("unchecked")
 	public void removeFamilyMember(String userID) {
 		String updateString = "MEMBER_UPDATE "+0+" "+ID+" false "+new Date().getTime();
 		updates.add(updateString);
 		users.remove(userID);
+		backend.new ServerUpdate().execute(backend.updates);
+		new ServerConnect().execute(lastTime);
+
 	}
 
 	public HashSet<User> getFamilyMembers() {
