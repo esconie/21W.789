@@ -28,14 +28,16 @@ import android.util.Log;
  */
 
 public class Backend implements Serializable {
+	private static final long serialVersionUID = -1724259363406356978L;
 	private static boolean backendLoaded = false;
 	private static Backend backend = new Backend();
 	public HashMap<String, Item> items = new HashMap<String, Item>();
 	public User me;
 	public HashMap<String, User> users;
 	public HashSet<Tag> allTags;
-	public ArrayList<String> updates = new ArrayList<String>();
 	private Context context;
+	public static final String IP = "23.21.127.158";
+	public static final int PORT = 4444;
 	
 	public String ID;
 	Long lastTime;
@@ -119,7 +121,6 @@ public class Backend implements Serializable {
 	
 	@SuppressWarnings("unchecked")
 	public static void writeBackend(Context c) throws IOException {
-		backend.new ServerUpdate().execute(backend.updates);
         new File(Environment.getExternalStorageDirectory(),"/Shopaholix/").mkdir();
         FileOutputStream file = new FileOutputStream(new File(Environment.getExternalStorageDirectory(), "/Shopaholix/shop.bak"));
         ObjectOutputStream output = new ObjectOutputStream(file);
@@ -289,12 +290,10 @@ public class Backend implements Serializable {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public void rateItem(String UPC, Rating rating) {
 		String updateString = "RATING_UPDATE "+UPC+" "+ID+" "+rating.toString()+" "+new Date().getTime();
-		updates.add(updateString);
 		items.get(UPC).ratings.put(me, rating);
-		new ServerUpdate().execute(updates);
+		new ServerUpdate().execute(updateString);
 		new ServerConnect().execute(lastTime);
 
 	}
@@ -303,24 +302,19 @@ public class Backend implements Serializable {
 		items.get(UPC).ratings.put(user, rating);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void addFamilyMember(User user, String id) {
 		String updateString = "MEMBER_UPDATE "+ID+" "+id+" true "+new Date().getTime();
-		updates.add(updateString);
 		users.put(id,user);
-		new ServerUpdate().execute(updates);
+		new ServerUpdate().execute(updateString);
 		new ServerConnect().execute(lastTime);
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public void removeFamilyMember(String userID) {
 		String updateString = "MEMBER_UPDATE "+ID+" "+userID+" false "+new Date().getTime();
-		updates.add(updateString);
 		users.remove(userID);
-		new ServerUpdate().execute(updates);
+		new ServerUpdate().execute(updateString);
 		new ServerConnect().execute(lastTime);
-
 	}
 
 	public HashSet<User> getFamilyMembers() {
@@ -424,22 +418,15 @@ public class Backend implements Serializable {
 		} 
 	}
 
-	private class ServerUpdate extends AsyncTask<ArrayList<String>,Void,Void>{
+	private class ServerUpdate extends AsyncTask<String,Void,Void>{
 
 		@Override
-		protected Void doInBackground(ArrayList<String>... arg0) {			
+		protected Void doInBackground(String... arg0) {
 			try {
 				Socket sock = new Socket("23.21.127.158", 4444);
 		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
 		        //SEND REQUEST AND PRINT RESPONSE
-		        String zeroID = "(RATING_UPDATE [0-9]+ 0 (GOOD|BAD|NEUTRAL) [0-9]+)";
-		        for (String update: arg0[0]) {
-		        	if (update.matches(zeroID)) {
-		        		String[] args = update.split(" ");
-		        		update = args[0]+" "+args[1]+" "+ID+" "+args[3] + " "+args[4];
-		        	}
-		        	out.println(update);
-				}
+	        	out.println(arg0[0]);
 		        out.flush();
 			} catch (Exception e) {
 				e.printStackTrace();

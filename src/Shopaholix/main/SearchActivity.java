@@ -33,18 +33,7 @@ public class SearchActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("OMG");
-        
-        try {
-			UserLog.sendToServer();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
+        System.out.println("OMG");        
         backend = Backend.getBackend(this);
         view = new SearchView(this);
         searchBar = view.EditText();
