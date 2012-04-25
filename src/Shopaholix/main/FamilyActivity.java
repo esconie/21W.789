@@ -54,11 +54,11 @@ public class FamilyActivity extends Activity {
         		familyList.removeAllViews();
         		
         		backend.addFamilyMember(new User(v.getText().toString()), v.getText().toString());
-        		for(User u : backend.users.values()){
+        		for(final User u : backend.users.values()){
         			ImageView I = view.ImageView();
         			I.setOnClickListener(new OnClickListener(){
     					public void onClick(View arg0) {
-							//backend.removeFamilyMember(userID)
+							backend.removeFamilyMember(u.name);
     					}
         			});
         			familyList.addView(view.FamilyResult(I, v.getText().toString()));

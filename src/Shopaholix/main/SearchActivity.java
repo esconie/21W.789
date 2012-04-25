@@ -24,7 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 public class SearchActivity extends Activity {
     /** Called when the activity is first created. */
-	Backend backend = Backend.getBackend(this);
+	Backend backend;
 	SearchView view;
 	LinearLayout results;
 	Button familyButton;
@@ -43,7 +43,7 @@ public class SearchActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
+        backend = Backend.getBackend(this);
         view = new SearchView(this);
         searchBar = view.EditText();
         searchBar.setInputType(524288); 
