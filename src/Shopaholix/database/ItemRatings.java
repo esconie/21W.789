@@ -1,12 +1,13 @@
 package Shopaholix.database;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import android.util.Log;
 
 import Shopaholix.database.ItemRatings.Rating;
 
-public class ItemRatings extends HashMap<User,Rating> {
+public class ItemRatings extends HashMap<User,Rating> implements Serializable{
 	public enum Rating {
 		UNRATED, BAD, NEUTRAL, GOOD
 	}
