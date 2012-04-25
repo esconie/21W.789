@@ -427,7 +427,7 @@ public class Backend implements Serializable {
 		@Override
 		protected Void doInBackground(ArrayList<String>... arg0) {			
 			try {
-				Socket sock = new Socket("23.21.127.158", 789);
+				Socket sock = new Socket("23.21.127.158", 4444);
 		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
 		        //SEND REQUEST AND PRINT RESPONSE
 		        String zeroID = "(RATING_UPDATE [0-9]+ 0 (GOOD|BAD|NEUTRAL) [0-9]+)";
