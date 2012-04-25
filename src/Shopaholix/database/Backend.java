@@ -303,7 +303,7 @@ public class Backend implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void addFamilyMember(User user, String id) {
-		String updateString = "MEMBER_UPDATE "+0+" "+ID+" true "+new Date().getTime();
+		String updateString = "MEMBER_UPDATE "+ID+" "+id+" true "+new Date().getTime();
 		updates.add(updateString);
 		users.put(id,user);
 		new ServerUpdate().execute(updates);
@@ -313,7 +313,7 @@ public class Backend implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void removeFamilyMember(String userID) {
-		String updateString = "MEMBER_UPDATE "+0+" "+ID+" false "+new Date().getTime();
+		String updateString = "MEMBER_UPDATE "+ID+" "+userID+" false "+new Date().getTime();
 		updates.add(updateString);
 		users.remove(userID);
 		new ServerUpdate().execute(updates);
