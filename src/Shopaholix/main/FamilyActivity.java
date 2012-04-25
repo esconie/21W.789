@@ -103,6 +103,7 @@ class FamilyView extends BaseView{
 			L.addView(I);
 				I.setLayoutParams(new LinearLayout.LayoutParams(0, 50, 1));
 				I.setImageResource(R.drawable.cross);
+				I.setLayoutParams(new LinearLayout.LayoutParams(40, 40));
 			
 		return L;
 	}
