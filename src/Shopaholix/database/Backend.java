@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.Random;
 
 import Shopaholix.database.ItemRatings.Rating;
 import android.accounts.Account;
@@ -70,13 +71,19 @@ public class Backend implements Serializable {
 	
 	public void setContext(Context c) {
 		context = c;
-		AccountManager accountManager = AccountManager.get(c);
+		try{
+			AccountManager accountManager = AccountManager.get(c);
+	
+		    Account[] accounts =
+		    accountManager.getAccountsByType("com.google");
+			users.put(accounts[0].name,me);		
+			ID = accounts[0].name;
 
-	    Account[] accounts =
-	    accountManager.getAccountsByType("com.google");
-		
-		users.put(accounts[0].name,me);		
-		ID = accounts[0].name;
+		}catch(Exception e){
+			String id = "id" + new Random().nextInt();
+			users.put(id,me);		
+			ID = id;
+		}
 	}
 	
 	public static Backend getBackend(Context c) {

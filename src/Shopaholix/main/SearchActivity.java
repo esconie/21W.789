@@ -33,6 +33,7 @@ public class SearchActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("OMG");
         
         try {
 			UserLog.sendToServer();
@@ -43,6 +44,7 @@ public class SearchActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
         backend = Backend.getBackend(this);
         view = new SearchView(this);
         searchBar = view.EditText();
