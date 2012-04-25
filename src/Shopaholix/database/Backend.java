@@ -354,7 +354,7 @@ public class Backend implements Serializable {
 			}
 			input +="\n";			
 			try {
-				Socket sock = new Socket("23.21.127.158", 789);
+				Socket sock = new Socket("23.21.127.158", 4444);
 		        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
 		        //SEND REQUEST AND PRINT RESPONSE
