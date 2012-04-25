@@ -41,6 +41,7 @@ public class Backend implements Serializable {
 	Long lastTime;
 
 	public Backend() {
+		System.out.println("starting loading backend");
 		lastTime = (long) 0;
 		//execute this statement whenever the backend is deserialized
 		new ServerConnect().execute(lastTime);
@@ -62,6 +63,7 @@ public class Backend implements Serializable {
 		rateItem(upcs[4], Rating.BAD);
 		rateFamilyItem(upcs[0], haoyi, Rating.GOOD);
 		rateFamilyItem(upcs[1], haoyi, Rating.BAD);
+		System.out.println("done loading backend");
 	}
 
 	public ArrayList<Item> getSuggestedItems(String s) {

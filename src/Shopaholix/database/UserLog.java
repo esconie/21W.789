@@ -16,7 +16,7 @@ import android.os.Environment;
 public class UserLog {
 
 	public static void sendToServer() throws UnknownHostException, IOException{
-		Socket sock = new Socket("23.21.127.158", 789);
+		Socket sock = new Socket("23.21.127.158", 4444);
         PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
         String log = readLogAsString();
         out.println(log);

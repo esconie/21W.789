@@ -56,6 +56,7 @@ public class FamilyActivity extends Activity {
     			return true;
         	}
         });
+        refreshList(view);
     }
     public void refreshList(final FamilyView view){
     	familyList.removeAllViews();
@@ -69,7 +70,6 @@ public class FamilyActivity extends Activity {
 			});
 			familyList.addView(view.FamilyResult(I, u.name));
 		}
-		
     }
     
 }
