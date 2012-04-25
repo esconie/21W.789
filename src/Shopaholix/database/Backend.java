@@ -269,7 +269,7 @@ public class Backend implements Serializable {
 			return items.get(upc);
 		} else {
 			Item item = UPCDatabase.lookupByUPC(upc);
-
+			if(item==null) return null;
 			items.put(upc, item);
 			for (Tag tag : item.tags) {
 				allTags.add(tag);
