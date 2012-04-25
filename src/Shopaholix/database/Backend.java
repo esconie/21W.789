@@ -36,6 +36,8 @@ public class Backend implements Serializable {
 	public HashMap<String, User> users;
 	public HashSet<Tag> allTags;
 	private Context context;
+	public static final String IP = "23.21.127.158";
+	public static final int PORT = 4444;
 	
 	public String ID;
 	Long lastTime;
