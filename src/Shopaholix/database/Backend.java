@@ -303,7 +303,7 @@ public class Backend implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void addFamilyMember(User user, String id) {
-		String updateString = "MEMBER_UPDATE "+0+" "+ID+" true "+new Date().getTime();
+		String updateString = "MEMBER_UPDATE "+ID+" "+id+" true "+new Date().getTime();
 		updates.add(updateString);
 		users.put(id,user);
 		new ServerUpdate().execute(updates);
@@ -313,7 +313,7 @@ public class Backend implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void removeFamilyMember(String userID) {
-		String updateString = "MEMBER_UPDATE "+0+" "+ID+" false "+new Date().getTime();
+		String updateString = "MEMBER_UPDATE "+ID+" "+userID+" false "+new Date().getTime();
 		updates.add(updateString);
 		users.remove(userID);
 		new ServerUpdate().execute(updates);
@@ -354,7 +354,7 @@ public class Backend implements Serializable {
 			}
 			input +="\n";			
 			try {
-				Socket sock = new Socket("23.21.127.158", 789);
+				Socket sock = new Socket("23.21.127.158", 4444);
 		        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
 		        //SEND REQUEST AND PRINT RESPONSE
@@ -427,7 +427,7 @@ public class Backend implements Serializable {
 		@Override
 		protected Void doInBackground(ArrayList<String>... arg0) {			
 			try {
-				Socket sock = new Socket("23.21.127.158", 789);
+				Socket sock = new Socket("23.21.127.158", 4444);
 		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
 		        //SEND REQUEST AND PRINT RESPONSE
 		        String zeroID = "(RATING_UPDATE [0-9]+ 0 (GOOD|BAD|NEUTRAL) [0-9]+)";
