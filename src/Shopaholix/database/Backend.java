@@ -292,7 +292,7 @@ public class Backend implements Serializable {
 		String updateString = "RATING_UPDATE "+UPC+" "+ID+" "+rating.toString()+" "+new Date().getTime();
 		updates.add(updateString);
 		items.get(UPC).ratings.put(me, rating);
-		backend.new ServerUpdate().execute(backend.updates);
+		new ServerUpdate().execute(updates);
 		new ServerConnect().execute(lastTime);
 
 	}
@@ -304,9 +304,9 @@ public class Backend implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void addFamilyMember(User user, String id) {
 		String updateString = "MEMBER_UPDATE "+0+" "+ID+" true "+new Date().getTime();
-		updates.add(updateString);		
+		updates.add(updateString);
 		users.put(id,user);
-		backend.new ServerUpdate().execute(backend.updates);
+		new ServerUpdate().execute(updates);
 		new ServerConnect().execute(lastTime);
 
 	}
@@ -316,7 +316,7 @@ public class Backend implements Serializable {
 		String updateString = "MEMBER_UPDATE "+0+" "+ID+" false "+new Date().getTime();
 		updates.add(updateString);
 		users.remove(userID);
-		backend.new ServerUpdate().execute(backend.updates);
+		new ServerUpdate().execute(updates);
 		new ServerConnect().execute(lastTime);
 
 	}
@@ -354,7 +354,7 @@ public class Backend implements Serializable {
 			}
 			input +="\n";			
 			try {
-				Socket sock = new Socket("localhost", 789);
+				Socket sock = new Socket("23.21.127.158", 789);
 		        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
 		        //SEND REQUEST AND PRINT RESPONSE
@@ -427,7 +427,7 @@ public class Backend implements Serializable {
 		@Override
 		protected Void doInBackground(ArrayList<String>... arg0) {			
 			try {
-				Socket sock = new Socket("localhost", 789);
+				Socket sock = new Socket("23.21.127.158", 789);
 		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
 		        //SEND REQUEST AND PRINT RESPONSE
 		        String zeroID = "(RATING_UPDATE [0-9]+ 0 (GOOD|BAD|NEUTRAL) [0-9]+)";
