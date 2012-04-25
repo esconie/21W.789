@@ -413,6 +413,9 @@ public class Backend implements Serializable {
 					
 				}
 			}
+			if (lastTime == 0) {
+				lastTime = (long) 1;
+			}
 		} 
 	}
 
