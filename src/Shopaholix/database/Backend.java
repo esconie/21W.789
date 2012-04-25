@@ -39,11 +39,10 @@ public class Backend implements Serializable {
 	public static final String IP = "23.21.127.158";
 	public static final int PORT = 4444;
 	
-	public String ID;
+	public static String ID;
 	Long lastTime;
 
 	public Backend() {
-		System.out.println("starting loading backend");
 		lastTime = (long) 0;
 		//execute this statement whenever the backend is deserialized
 		new ServerConnect().execute(lastTime);
@@ -58,14 +57,13 @@ public class Backend implements Serializable {
 			getItem(upc);
 		}
 		User haoyi = new User("Haoyi");
-		addFamilyMember(haoyi,"HAOYI@SHOPAHOLIX");
+		//addFamilyMember(haoyi,"HAOYI@SHOPAHOLIX");
 		rateItem(upcs[0], Rating.GOOD);
 		rateItem(upcs[1], Rating.GOOD);
 		rateItem(upcs[3], Rating.NEUTRAL);
 		rateItem(upcs[4], Rating.BAD);
 		rateFamilyItem(upcs[0], haoyi, Rating.GOOD);
 		rateFamilyItem(upcs[1], haoyi, Rating.BAD);
-		System.out.println("done loading backend");
 	}
 
 	public ArrayList<Item> getSuggestedItems(String s) {
@@ -86,7 +84,7 @@ public class Backend implements Serializable {
 
 		}catch(Exception e){
 			String id = "id" + new Random().nextInt();
-			users.put(id,me);		
+			//users.put(id,me);		
 			ID = id;
 		}
 

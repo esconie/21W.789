@@ -8,12 +8,10 @@ import java.net.UnknownHostException;
 
 import android.os.AsyncTask;
 
-
 public class UserLog extends AsyncTask<String,Void,Void> {
 		
-
 	public static void appendLog(String text) {
-		new UserLog().execute("SEND_LOG "+text);
+		new UserLog().execute("SEND_LOG "+Backend.ID +" "+text);
 	}
 
 	@Override
