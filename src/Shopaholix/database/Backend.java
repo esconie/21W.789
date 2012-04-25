@@ -74,7 +74,7 @@ public class Backend implements Serializable {
 
 	    Account[] accounts =
 	    accountManager.getAccountsByType("com.google");
-		
+		Log.d("uu",accounts.toString());
 		users.put(accounts[0].name,me);		
 		ID = accounts[0].name;
 	}
@@ -278,27 +278,38 @@ public class Backend implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void rateItem(String UPC, Rating rating) {
 		String updateString = "RATING_UPDATE "+UPC+" "+ID+" "+rating.toString()+" "+new Date().getTime();
 		updates.add(updateString);
 		items.get(UPC).ratings.put(me, rating);
+		backend.new ServerUpdate().execute(backend.updates);
+		new ServerConnect().execute(lastTime);
+
 	}
 
 	public void rateFamilyItem(String UPC, User user, Rating rating) {
 		items.get(UPC).ratings.put(user, rating);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void addFamilyMember(User user, String id) {
 		String updateString = "MEMBER_UPDATE "+0+" "+ID+" true "+new Date().getTime();
-		updates.add(updateString);
-		
+		updates.add(updateString);		
 		users.put(id,user);
+		backend.new ServerUpdate().execute(backend.updates);
+		new ServerConnect().execute(lastTime);
+
 	}
 
+	@SuppressWarnings("unchecked")
 	public void removeFamilyMember(String userID) {
 		String updateString = "MEMBER_UPDATE "+0+" "+ID+" false "+new Date().getTime();
 		updates.add(updateString);
 		users.remove(userID);
+		backend.new ServerUpdate().execute(backend.updates);
+		new ServerConnect().execute(lastTime);
+
 	}
 
 	public HashSet<User> getFamilyMembers() {
