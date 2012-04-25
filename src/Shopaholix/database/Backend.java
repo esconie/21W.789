@@ -49,6 +49,7 @@ public class Backend implements Serializable {
 		
 		me = new User("Personal");
 		users = new HashMap<String,User>();
+		users.put("Personal", me);
 		allTags = new HashSet<Tag>();
 		
 		String[] upcs = { "037000188421", "037000230113", "037000188438",
@@ -56,14 +57,10 @@ public class Backend implements Serializable {
 		for (String upc : upcs) {
 			getItem(upc);
 		}
-		User haoyi = new User("Haoyi");
-		//addFamilyMember(haoyi,"HAOYI@SHOPAHOLIX");
 		rateItem(upcs[0], Rating.GOOD);
 		rateItem(upcs[1], Rating.GOOD);
 		rateItem(upcs[3], Rating.NEUTRAL);
 		rateItem(upcs[4], Rating.BAD);
-		rateFamilyItem(upcs[0], haoyi, Rating.GOOD);
-		rateFamilyItem(upcs[1], haoyi, Rating.BAD);
 	}
 
 	public ArrayList<Item> getSuggestedItems(String s) {
@@ -84,7 +81,7 @@ public class Backend implements Serializable {
 
 		}catch(Exception e){
 			String id = "id" + new Random().nextInt();
-			//users.put(id,me);		
+			users.put(id,me);		
 			ID = id;
 		}
 
@@ -293,7 +290,6 @@ public class Backend implements Serializable {
 		items.get(UPC).ratings.put(me, rating);
 		new ServerUpdate().execute(updateString);
 		new ServerConnect().execute(lastTime);
-
 	}
 
 	public void rateFamilyItem(String UPC, User user, Rating rating) {
