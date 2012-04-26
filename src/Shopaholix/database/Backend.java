@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.concurrent.locks.ReentrantLock;
 
 import Shopaholix.database.ItemRatings.Rating;
 import android.accounts.Account;
@@ -38,6 +39,7 @@ public class Backend implements Serializable {
 	private Context context;
 	public static final String IP = "23.21.127.158";
 	public static final int PORT = 4444;
+	public static final ReentrantLock serverLock = new ReentrantLock();
 	
 	public static String ID;
 	Long lastTime;
@@ -348,20 +350,19 @@ public class Backend implements Serializable {
 		        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
 		        //SEND REQUEST AND PRINT RESPONSE
-		        while(true){
+		        ArrayList<String> response = new ArrayList<String>();
+		        synchronized(serverLock) {
 			        out.println(input);
 			        out.flush();
 			        String thisLine = "";
-			        ArrayList<String> response = new ArrayList<String>();
 			        while(true){
 			        	thisLine = in.readLine();
 			        	if(thisLine == null || thisLine.trim().length() <= 0)
 			        		break;
 			        	response.add(thisLine);
 			        }
-			        System.out.println(response);
-			        return response;
 		        }
+				return response;
 			} catch (Exception e) {
 				return null;
 			}
@@ -422,9 +423,11 @@ public class Backend implements Serializable {
 			try {
 				Socket sock = new Socket("23.21.127.158", 4444);
 		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
-		        //SEND REQUEST AND PRINT RESPONSE
-	        	out.println(arg0[0]);
-		        out.flush();
+		        //SEND REQUEST
+		        synchronized (serverLock) {
+		        	out.println(arg0[0]);
+		        	out.flush();
+		        }
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
