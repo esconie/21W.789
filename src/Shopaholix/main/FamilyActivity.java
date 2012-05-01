@@ -51,8 +51,8 @@ public class FamilyActivity extends Activity {
         
         searchBar.setOnEditorActionListener(new OnEditorActionListener(){
         	public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
+        		System.out.println("Editor Action");
         		familyList.removeAllViews();
-        		
         		backend.addFamilyMember(new User(v.getText().toString()), v.getText().toString());
         		for(final User u : backend.users.values()){
         			ImageView I = view.ImageView();
@@ -61,10 +61,9 @@ public class FamilyActivity extends Activity {
 							backend.removeFamilyMember(u.name);
     					}
         			});
-        			familyList.addView(view.FamilyResult(I, v.getText().toString()));
+        			familyList.addView(view.FamilyResult(I, u.name.toString()));
+        			familyList.addView(view.HR());
         		}
-    			
-    			
     			return true;
         	}
         });
