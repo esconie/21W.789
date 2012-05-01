@@ -19,9 +19,11 @@ public class UserLog extends AsyncTask<String,Void,Void> {
 		Socket sock;
 		try {
 			sock = new Socket(Backend.IP,Backend.PORT);
-	        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
-	        out.println(arg0[0]);
-	        out.flush();
+	        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
+	        synchronized(Backend.serverLock) {
+	        	out.println(arg0[0]);
+	        	out.flush();
+	        }
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
