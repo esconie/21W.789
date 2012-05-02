@@ -51,12 +51,17 @@ public class FamilyActivity extends Activity implements OnEditorActionListener{
         setContentView(view.render(searchBar, familyList));
         
         searchBar.setOnEditorActionListener(this);
-    	onEditorAction(searchBar, 0, null);
+        refreshList();
     }
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
 		System.out.println("Editor Action");
-		familyList.removeAllViews();
 		backend.addFamilyMember(new User(v.getText().toString()), v.getText().toString());
+		refreshList();
+		return true;
+	}
+    public void refreshList(){
+		familyList.removeAllViews();
+		
 		for(final User u : backend.users.values()){
 			if (u.name == "Personal") continue;
 			if (u.name == "") continue;
@@ -69,8 +74,8 @@ public class FamilyActivity extends Activity implements OnEditorActionListener{
 			familyList.addView(view.FamilyResult(I, u.name.toString()));
 			familyList.addView(view.HR());
 		}
-		return true;
-	}
+    
+    }
     
     
 }

@@ -88,4 +88,5 @@ public class BaseView {
 	public ImageView ImageView(){
     	return new ImageView(a);
     }
+	
 }

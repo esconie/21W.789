@@ -3,6 +3,8 @@ package Shopaholix.main;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import Shopaholix.database.Backend;
 import Shopaholix.database.Item;
@@ -62,8 +64,19 @@ public class SearchActivity extends Activity {
 					if (i >= suggestedTags.size())
 						break;
 					final Tag t = suggestedTags.get(i);
-					View itemResult = view.SearchResult(t.name,
-							t.ratings.get(new User("Personal")));
+					
+					List<Rating> L = new LinkedList<Rating>();
+					for(User U : backend.users.values()){
+						if(!U.name.equals("Personal")){
+							L.add(t.ratings.get(U));
+						}							
+					}
+					
+					View itemResult = view.SearchResult(
+						t.name,
+						t.ratings.get(new User("Personal")),
+						L
+					);
 
 					results.addView(itemResult);
 
@@ -95,9 +108,18 @@ public class SearchActivity extends Activity {
 				}
 
 				for (final Item i : suggestedItems) {
-
-					View itemResult = view.SearchResult(i.name,
-							i.ratings.get(new User("Personal")));
+					List<Rating> L = new LinkedList<Rating>();
+					for(User U : backend.users.values()){
+						if(!U.name.equals("Personal")){
+							L.add(i.ratings.get(U));
+						}
+					}
+					
+					View itemResult = view.SearchResult(
+						i.name,
+						i.ratings.get(new User("Personal")),
+						L
+					);
 
 					results.addView(itemResult);
 
@@ -150,7 +172,7 @@ class SearchView extends BaseView {
 
 	public View render(EditText E, LinearLayout results, Button familyButton,
 			Button scanButton) {
-		LinearLayout L = Shell();
+			LinearLayout L = Shell();
 
 			
 			L.addView(E);
@@ -166,7 +188,7 @@ class SearchView extends BaseView {
 		return L;
 	}
 
-	public View SearchResult(String text, Rating myRating) {
+	public View SearchResult(String text, Rating myRating, List<Rating> otherRatings) {
 		LinearLayout L = LinearLayout();
 		L.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -174,11 +196,24 @@ class SearchView extends BaseView {
 		L.addView(T);
 
 		T.setLayoutParams(new LinearLayout.LayoutParams(0, 50, 5));
+		
+		LinearLayout H = HorizontalLayout(); L.addView(H);
+		H.setLayoutParams(new LinearLayout.LayoutParams(0, 50, 1));
+		for(Rating r: otherRatings){
+			H.addView(Icon(r));
+		}
+		
+		
+		L.addView(Icon(myRating));
+
+		return L;
+	}
+	
+	public View Icon(Rating r){
 		ImageView I = ImageView();
-		L.addView(I);
-		Log.d("cow", "myRatingsmoooo " + myRating);
+		
 		I.setLayoutParams(new LinearLayout.LayoutParams(0, 50, 1));
-		switch (myRating) {
+		switch (r) {
 		case GOOD:
 			I.setImageResource(R.drawable.green_up);
 			break;
@@ -189,7 +224,7 @@ class SearchView extends BaseView {
 			I.setImageResource(R.drawable.red_down);
 			break;
 		}
-
-		return L;
+		return I;
+	
 	}
 }

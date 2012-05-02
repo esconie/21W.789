@@ -10,6 +10,7 @@ import java.util.List;
 
 import Shopaholix.database.Backend;
 import Shopaholix.database.Item;
+import Shopaholix.database.ItemRatings;
 import Shopaholix.database.ItemRatings.Rating;
 import Shopaholix.database.User;
 import Shopaholix.database.UserLog;
@@ -142,7 +143,8 @@ class ItemView extends BaseView {
 		// L1.addView(UserResult("Danny"));
 		backend = Backend.getBackend(c);
 		for (User u : backend.users.values()) {
-			if (!u.equals(new User("Personal")))
+			
+			if (item.ratings.get(u) != ItemRatings.Rating.UNRATED && !u.equals(new User("Personal")) )
 				L1.addView(UserResult(u.name, item));
 		}
 		L.addView(HR());
