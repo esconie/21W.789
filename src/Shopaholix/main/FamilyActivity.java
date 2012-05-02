@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 
-public class FamilyActivity extends Activity {
+public class FamilyActivity extends Activity implements OnEditorActionListener{
     /** Called when the activity is first created. */
 	 
 	String upc;
@@ -37,38 +37,41 @@ public class FamilyActivity extends Activity {
 	Backend backend;
 	EditText searchBar;
 	LinearLayout familyList;
+	FamilyView view;
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	UserLog.appendLog("Viewing Family Screen");
         super.onCreate(savedInstanceState);
         backend = Backend.getBackend(this);
+        view = new FamilyView(this);
         
-        final FamilyView view = new FamilyView(this);
       
         searchBar = view.EditText();
         familyList = view.VerticalLayout();
         setContentView(view.render(searchBar, familyList));
         
-        searchBar.setOnEditorActionListener(new OnEditorActionListener(){
-        	public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
-        		System.out.println("Editor Action");
-        		familyList.removeAllViews();
-        		backend.addFamilyMember(new User(v.getText().toString()), v.getText().toString());
-        		for(final User u : backend.users.values()){
-        			ImageView I = view.ImageView();
-        			I.setOnClickListener(new OnClickListener(){
-    					public void onClick(View arg0) {
-							backend.removeFamilyMember(u.name);
-    					}
-        			});
-        			familyList.addView(view.FamilyResult(I, u.name.toString()));
-        			familyList.addView(view.HR());
-        		}
-    			return true;
-        	}
-        });
+        searchBar.setOnEditorActionListener(this);
+    	onEditorAction(searchBar, 0, null);
     }
-
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
+		System.out.println("Editor Action");
+		familyList.removeAllViews();
+		backend.addFamilyMember(new User(v.getText().toString()), v.getText().toString());
+		for(final User u : backend.users.values()){
+			if (u.name == "Personal") continue;
+			if (u.name == "") continue;
+			ImageView I = view.ImageView();
+			I.setOnClickListener(new OnClickListener(){
+				public void onClick(View arg0) {
+					backend.removeFamilyMember(u.name);
+				}
+			});
+			familyList.addView(view.FamilyResult(I, u.name.toString()));
+			familyList.addView(view.HR());
+		}
+		return true;
+	}
+    
     
 }
 
@@ -84,8 +87,7 @@ class FamilyView extends BaseView{
 			
 			
 			L.addView(familyList);
-				familyList.addView(FamilyResult(ImageView(), "Aakanksha"));
-				familyList.addView(FamilyResult(ImageView(), "Danny"));
+
 				
 			L.addView(HR());
 			

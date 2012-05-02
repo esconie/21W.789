@@ -18,6 +18,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -128,10 +129,13 @@ class SearchView extends BaseView{
 			L.addView(E);
 			L.addView(results);
 			LinearLayout L1 = HorizontalLayout(); L.addView(L1);
-				L1.addView(familyButton);
-					familyButton.setText("Family");
 				L1.addView(scanButton);
-					scanButton.setText("Scan");
+					scanButton.setText("Scan Item");
+					scanButton.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.FILL_PARENT, 1));
+				L1.addView(familyButton);
+					familyButton.setText("Edit Family");
+					familyButton.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.FILL_PARENT, 1));
+				
 		return L;
 	}
 	
