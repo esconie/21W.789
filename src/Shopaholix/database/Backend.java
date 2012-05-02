@@ -45,24 +45,30 @@ public class Backend implements Serializable {
 	Long lastTime;
 
 	public Backend() {
+		System.out.println("Initializing new backend 1");
 		lastTime = (long) 0;
 		//execute this statement whenever the backend is deserialized
 		new ServerConnect().execute(lastTime);
-		
+		System.out.println("Initializing new backend 2");
 		me = new User("Personal");
 		users = new HashMap<String,User>();
 		users.put("Personal", me);
 		allTags = new HashSet<Tag>();
+		new Thread(new Runnable() {
+			public void run(){
+				String[] upcs = { "037000188421", "037000230113", "037000188438",
+						"037000185055", "037000185208" };
+				for (String upc : upcs) {
+					getItem(upc);
+				}
+				rateItem(upcs[0], Rating.GOOD);
+				rateItem(upcs[1], Rating.GOOD);
+				rateItem(upcs[3], Rating.NEUTRAL);
+				rateItem(upcs[4], Rating.BAD);
+			}
+		}).start();
 		
-		String[] upcs = { "037000188421", "037000230113", "037000188438",
-				"037000185055", "037000185208" };
-		for (String upc : upcs) {
-			getItem(upc);
-		}
-		rateItem(upcs[0], Rating.GOOD);
-		rateItem(upcs[1], Rating.GOOD);
-		rateItem(upcs[3], Rating.NEUTRAL);
-		rateItem(upcs[4], Rating.BAD);
+		System.out.println("Initializing new backend DONE");
 	}
 
 	public ArrayList<Item> getSuggestedItems(String s) {
