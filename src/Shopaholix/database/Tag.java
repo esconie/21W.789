@@ -19,7 +19,7 @@ public class Tag implements Serializable {
 		return name.hashCode();
 	}
 	public boolean satisfies(Tag partial) {
-		return name.contains(partial.name);
+		return 0==name.indexOf(partial.name);
 	}
 	
 }

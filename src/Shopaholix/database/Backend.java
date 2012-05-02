@@ -82,7 +82,7 @@ public class Backend implements Serializable {
 			ID = accounts[0].name;
 
 		}catch(Exception e){
-			String id = "id" + new Random().nextInt();
+			String id = "id@" + new Random().nextInt();
 			users.put(id,me);		
 			ID = id;
 		}
