@@ -89,7 +89,7 @@ public class SearchActivity extends Activity {
 								String[] tokens = s.split(" ");
 								for (String name : tokens) {
 									if (!name.equals(""))
-										result += name+" ";
+										result += name + " ";
 								}
 							}
 
@@ -97,6 +97,7 @@ public class SearchActivity extends Activity {
 							// Backend.parseTags as a quick fix (may not be
 							// bug free)
 
+							UserLog.appendLog("Clicked on tag: " + t.name);
 							searchBar.setText(result + t.name + " ");
 							thatt.afterTextChanged(null);
 							searchBar
@@ -174,16 +175,18 @@ class SearchView extends BaseView {
 			Button scanButton) {
 			LinearLayout L = Shell();
 
-			
-			L.addView(E);
-			L.addView(results);
-			LinearLayout L1 = HorizontalLayout(); L.addView(L1);
-				L1.addView(scanButton);
-					scanButton.setText("Scan Item");
-					scanButton.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.FILL_PARENT, 1));
-				L1.addView(familyButton);
-					familyButton.setText("Edit Family");
-					familyButton.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.FILL_PARENT, 1));
+		L.addView(E);
+		L.addView(results);
+		LinearLayout L1 = HorizontalLayout();
+		L.addView(L1);
+		L1.addView(scanButton);
+		scanButton.setText("Scan Item");
+		scanButton.setLayoutParams(new LinearLayout.LayoutParams(0,
+				LayoutParams.FILL_PARENT, 1));
+		L1.addView(familyButton);
+		familyButton.setText("Edit Family");
+		familyButton.setLayoutParams(new LinearLayout.LayoutParams(0,
+				LayoutParams.FILL_PARENT, 1));
 
 		return L;
 	}
