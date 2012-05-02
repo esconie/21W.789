@@ -78,12 +78,12 @@ public class Backend implements Serializable {
 	
 		    Account[] accounts =
 		    accountManager.getAccountsByType("com.google");
-			users.put(accounts[0].name,me);		
+//			users.put(accounts[0].name,me);		
 			ID = accounts[0].name;
 
 		}catch(Exception e){
-			String id = "id@" + new Random().nextInt();
-			users.put(id,me);		
+			String id = "id" + new Random().nextInt();
+//			users.put(id,me);		
 			ID = id;
 		}
 
