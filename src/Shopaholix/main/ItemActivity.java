@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ItemActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -49,6 +50,11 @@ public class ItemActivity extends Activity {
 
 		upc = this.getIntent().getExtras().getString("upc");
 		I = backend.getItem(upc);
+		if(I == null){
+			Toast.makeText(getApplicationContext(), "Item not found in database", Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		}
 		UserLog.appendLog("Viewing Item Screen for item: " + I.name + ", upc: "
 				+ I.upc);
 		Rating myRating = I.ratings.get(new User("Personal"));
