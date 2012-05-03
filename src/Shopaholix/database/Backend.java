@@ -54,15 +54,20 @@ public class Backend implements Serializable {
 		users.put("Personal", me);
 		allTags = new HashSet<Tag>();
 		
-		String[] upcs = { "037000188421", "037000230113", "037000188438",
-				"037000185055", "037000185208" };
-		for (String upc : upcs) {
-			getItem(upc);
-		}
-		rateItem(upcs[0], Rating.GOOD);
-		rateItem(upcs[1], Rating.GOOD);
-		rateItem(upcs[3], Rating.NEUTRAL);
-		rateItem(upcs[4], Rating.BAD);
+		new Thread(new Runnable(){
+			public void run(){
+				String[] upcs = { "037000188421", "037000230113", "037000188438",
+						"037000185055", "037000185208" };
+				for (String upc : upcs) {
+					getItem(upc);
+				}
+				rateItem(upcs[0], Rating.GOOD);
+				rateItem(upcs[1], Rating.GOOD);
+				rateItem(upcs[3], Rating.NEUTRAL);
+				rateItem(upcs[4], Rating.BAD);				
+			}
+		}).start();
+		
 	}
 
 	public ArrayList<Item> getSuggestedItems(String s) {
