@@ -15,6 +15,7 @@ import Shopaholix.database.UserLog;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -164,7 +165,21 @@ public class SearchActivity extends Activity {
 		});
 
 	}
+	
+	@Override
+	public void onPause(){
+		try {
+			Backend.writeBackend(getApplicationContext());
+			Log.d("WROTE BACKEND", "WROTE BACKEND");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		super.onPause();
+	}
+
 }
+
 
 class SearchView extends BaseView {
 	public SearchView(Activity a) {

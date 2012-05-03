@@ -36,7 +36,6 @@ public class Backend implements Serializable {
 	public User me;
 	public HashMap<String, User> users;
 	public HashSet<Tag> allTags;
-	private Context context;
 	public static final String IP = "23.21.127.158";
 	public static final int PORT = 4444;
 	public static final ReentrantLock serverLock = new ReentrantLock();
@@ -76,7 +75,6 @@ public class Backend implements Serializable {
 	
 	
 	public void setContext(Context c) {
-		context = c;
 
 		try{
 			AccountManager accountManager = AccountManager.get(c);
@@ -351,7 +349,8 @@ public class Backend implements Serializable {
 				input = "NEWUSER "+ID;
 			} else {
 				input = "GET_UPDATE "+ID+ " "+arg0[0];
-				Log.d("cows",ID);
+				if(ID != null)
+					Log.d("cows",ID);
 			}
 			input +="\n";			
 			try {
