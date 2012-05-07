@@ -105,6 +105,7 @@ public class SearchActivity extends Activity {
 
 						}
 					});
+					
 					results.addView(view.HR());
 				}
 
@@ -134,6 +135,12 @@ public class SearchActivity extends Activity {
 							that.startActivityForResult(myIntent, 10);
 						}
 					});
+					
+					
+					
+					
+					
+					
 					results.addView(view.HR());
 
 				}

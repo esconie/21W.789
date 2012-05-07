@@ -26,7 +26,10 @@ public class BaseView {
 		LinearLayout L = LinearLayout();
 		L.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 2));
 		L.setBackgroundColor(android.graphics.Color.LTGRAY);
-		return L;
+		LinearLayout SP = VerticalLayout();
+		SP.addView(L);
+		SP.setPadding(0, 10, 0, 10);
+		return SP;
 	}
 	
 	
