@@ -18,9 +18,9 @@ public class UserLog extends AsyncTask<String,Void,Void> {
 	protected Void doInBackground(String... arg0) {
 		Socket sock;
 		try {
-			sock = new Socket(Backend.IP,Backend.PORT);
-	        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 	        synchronized(Backend.serverLock) {
+				sock = new Socket(Backend.IP,Backend.PORT);
+		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 	        	out.println(arg0[0]);
 	        	out.flush();
 	        }

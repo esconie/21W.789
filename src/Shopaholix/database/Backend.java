@@ -36,7 +36,6 @@ public class Backend implements Serializable {
 	public User me;
 	public HashMap<String, User> users;
 	public HashSet<Tag> allTags;
-	private Context context;
 	public static final String IP = "23.21.127.158";
 	public static final int PORT = 4444;
 	public static final ReentrantLock serverLock = new ReentrantLock();
@@ -54,15 +53,20 @@ public class Backend implements Serializable {
 		users.put("Personal", me);
 		allTags = new HashSet<Tag>();
 		
-		String[] upcs = { "037000188421", "037000230113", "037000188438",
-				"037000185055", "037000185208" };
-		for (String upc : upcs) {
-			getItem(upc);
-		}
-		rateItem(upcs[0], Rating.GOOD);
-		rateItem(upcs[1], Rating.GOOD);
-		rateItem(upcs[3], Rating.NEUTRAL);
-		rateItem(upcs[4], Rating.BAD);
+		new Thread(new Runnable(){
+			public void run(){
+				String[] upcs = { "037000188421", "037000230113", "037000188438",
+						"037000185055", "037000185208" };
+				for (String upc : upcs) {
+					getItem(upc);
+				}
+				rateItem(upcs[0], Rating.GOOD);
+				rateItem(upcs[1], Rating.GOOD);
+				rateItem(upcs[3], Rating.NEUTRAL);
+				rateItem(upcs[4], Rating.BAD);				
+			}
+		}).start();
+		
 	}
 
 	public ArrayList<Item> getSuggestedItems(String s) {
@@ -71,19 +75,20 @@ public class Backend implements Serializable {
 	
 	
 	public void setContext(Context c) {
-		context = c;
 
 		try{
 			AccountManager accountManager = AccountManager.get(c);
 	
 		    Account[] accounts =
 		    accountManager.getAccountsByType("com.google");
-//			users.put(accounts[0].name,me);		
+			users.put(accounts[0].name,me);		
 			ID = accounts[0].name;
 
 		}catch(Exception e){
-			String id = "id@" + new Random().nextInt();
-//			users.put(id,me);		
+
+			String id = "id@" + Math.abs(new Random().nextInt());
+			users.put(id,me);		
+
 			ID = id;
 		}
 
@@ -290,6 +295,7 @@ public class Backend implements Serializable {
 	public void rateItem(String UPC, Rating rating) {
 		String updateString = "RATING_UPDATE "+UPC+" "+ID+" "+rating.toString()+" "+new Date().getTime();
 		items.get(UPC).ratings.put(me, rating);
+		Log.d("update",updateString);
 		new ServerUpdate().execute(updateString);
 		new ServerConnect().execute(lastTime);
 	}
@@ -337,22 +343,27 @@ public class Backend implements Serializable {
 
 		@Override
 		protected ArrayList<String> doInBackground(Long... arg0) {
+			Log.d("cows","fetching start");
+			Log.d("cows",arg0[0].toString());
 			String input = "";
 			// arg0[0] is the time 
 			if (arg0[0] == 0) {
 				input = "NEWUSER "+ID;
 			} else {
 				input = "GET_UPDATE "+ID+ " "+arg0[0];
+				if(ID != null)
+					Log.d("cows",ID);
 			}
 			input +="\n";			
 			try {
-				Socket sock = new Socket("23.21.127.158", 4444);
-		        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
 		        //SEND REQUEST AND PRINT RESPONSE
 		        ArrayList<String> response = new ArrayList<String>();
 		        synchronized(serverLock) {
-			        out.println(input);
+					Socket sock = new Socket(IP, 4444);
+			        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+			        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
+
+		        	out.println(input);
 			        out.flush();
 			        String thisLine = "";
 			        while(true){
@@ -380,34 +391,36 @@ public class Backend implements Serializable {
 			String ratingUpdate = "(RATING_UPDATE " + upc + " " + id + " (GOOD|BAD|NEUTRAL) [0-9]+)";
 
 			for (String update: result) {
-				if (update.matches(id)) {
-					ID = update;
-				} else if (update.matches(memberUpdate)) {
+				if (update.matches(memberUpdate)) {
 					String[] args = update.split(" ");
 					String newID = args[2];
 					if (!newID.equals(ID)) {
 						Boolean add = Boolean.parseBoolean(args[3]);
 						if (add) {
-							users.put(newID, new User(newID));
+							if (!users.containsKey(newID)) {
+								users.put(newID, new User(newID));
+								Log.d("adding user", newID);
+							}
 						}
 						else {
 							users.remove(newID);
 						}
-						lastTime = Long.parseLong(args[4]);
+						lastTime = Long.parseLong(args[4])+1;
 					}					
 				} else if (update.matches(ratingUpdate)) {
 					String[] args = update.split(" ");
 					String newID = args[2];
 					if (newID.equals(ID)) {
-						rateItem(args[1], Rating.valueOf(args[2]));
+						rateItem(args[1], Rating.valueOf(args[3]));
 					} else {
 						User user = users.get(newID);
 						if (user != null) {
-							rateFamilyItem(args[1], user, Rating.valueOf(args[2]));
+							rateFamilyItem(args[1], user, Rating.valueOf(args[3]));
 						}
 					}
-					lastTime = Long.parseLong(args[4]);
-					
+					lastTime = Long.parseLong(args[4]) +1;
+				} else if (update.matches(id)) {
+					ID = update;
 				}
 			}
 			if (lastTime == 0) {
@@ -421,10 +434,12 @@ public class Backend implements Serializable {
 		@Override
 		protected Void doInBackground(String... arg0) {
 			try {
-				Socket sock = new Socket("23.21.127.158", 4444);
-		        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
 		        //SEND REQUEST
 		        synchronized (serverLock) {
+		        	Log.d("cow",arg0[0]);
+					Socket sock = new Socket(IP, 4444);
+			        PrintWriter out = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));        
+
 		        	out.println(arg0[0]);
 		        	out.flush();
 		        }
