@@ -50,11 +50,13 @@ public class FamilyActivity extends Activity implements OnEditorActionListener{
         searchBar = view.EditText();
         searchBar.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         familyList = view.VerticalLayout();
+
         setContentView(view.render(searchBar, familyList));  
         
         searchBar.setOnEditorActionListener(this);
         refreshList();
     }
+    
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
 		System.out.println("Editor Action");
 		backend.addFamilyMember(new User(v.getText().toString()), v.getText().toString());
@@ -65,17 +67,19 @@ public class FamilyActivity extends Activity implements OnEditorActionListener{
 		familyList.removeAllViews();
 		
 		for(final User u : backend.users.values()){
-			if (u.name == "Personal") continue;
-			if (u.name == "") continue;
-			ImageView I = view.ImageView();
-			I.setOnClickListener(new OnClickListener(){
-				public void onClick(View arg0) {
-					backend.removeFamilyMember(u.name);
-					refreshList();
-				}
-			});
-			familyList.addView(view.FamilyResult(I, u.name.toString()));
-			familyList.addView(view.HR());
+			if (u.name.equals("Personal")) continue;
+			else if (u.name.equals("")) continue;
+			else {
+				ImageView I = view.ImageView();
+				I.setOnClickListener(new OnClickListener(){
+					public void onClick(View arg0) {
+						backend.removeFamilyMember(u.name);
+						refreshList();
+					}
+				});
+				familyList.addView(view.FamilyResult(I, u.name.toString()));
+				familyList.addView(view.HR());
+			}
 		}
     
     }

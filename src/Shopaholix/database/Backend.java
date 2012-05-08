@@ -110,6 +110,7 @@ public class Backend implements Serializable {
 			if ((f = new File(Environment.getExternalStorageDirectory(),"/Shopaholix/shop.bak")).isFile()) {
 				ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
 				backend = (Backend) in.readObject();
+				backend.setContext(c);
 				backend.new ServerConnect().execute(backend.lastTime);
 				return backend;
 			}
