@@ -171,7 +171,7 @@ class ItemView extends BaseView {
 		LinearLayout V = HorizontalLayout();
 		V.addView(itempic);
 		itempic.setLayoutParams(new LinearLayout.LayoutParams(0,
-				LayoutParams.WRAP_CONTENT, 1));
+				300, 1));
 
 		RadioGroup RG = RadioGroup();
 		V.addView(RG);
