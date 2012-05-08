@@ -38,6 +38,8 @@ public class FamilyActivity extends Activity implements OnEditorActionListener{
 	EditText searchBar;
 	LinearLayout familyList;
 	FamilyView view;
+	
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	UserLog.appendLog("Viewing Family Screen");
@@ -45,7 +47,6 @@ public class FamilyActivity extends Activity implements OnEditorActionListener{
         backend = Backend.getBackend(this);
         view = new FamilyView(this);
         
-      
         searchBar = view.EditText();
         searchBar.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         familyList = view.VerticalLayout();

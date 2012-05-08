@@ -53,99 +53,9 @@ public class SearchActivity extends Activity {
 		final Activity that = this;
 		searchBar.addTextChangedListener(new TextWatcher() {
 			public void afterTextChanged(Editable s) {
-				final TextWatcher thatt = this;
-				ArrayList<Item> suggestedItems = backend
-						.getSuggestedItems(searchBar.getText().toString());
-				ArrayList<Tag> suggestedTags = backend
-						.getSuggestedTags(searchBar.getText().toString());
-
-				results.removeAllViews();
-
-				for (int i = 0; i < 2; i++) {
-					if (i >= suggestedTags.size())
-						break;
-					final Tag t = suggestedTags.get(i);
-					
-					List<Rating> L = new LinkedList<Rating>();
-					for(User U : backend.users.values()){
-						if(!U.name.equals("Personal")){
-							L.add(t.ratings.get(U));
-						}							
-					}
-					
-					View itemResult = view.SearchResult(
-						t.name,
-						t.ratings.get(new User("Personal")),
-						L
-					);
-
-					results.addView(itemResult);
-
-					itemResult.setOnClickListener(new OnClickListener() {
-						public void onClick(View view) {
-							String s = searchBar.getText().toString();
-							String result = "";
-							if (-1 != s.lastIndexOf(' ')) {
-								s = s.substring(0, s.lastIndexOf(' '));
-								String[] tokens = s.split(" ");
-								for (String name : tokens) {
-									if (!name.equals(""))
-										result += name + " ";
-								}
-							}
-
-							// be aware this code is copied from
-							// Backend.parseTags as a quick fix (may not be
-							// bug free)
-
-							UserLog.appendLog("Clicked on tag: " + t.name);
-							searchBar.setText(result + t.name + " ");
-							thatt.afterTextChanged(null);
-							searchBar
-									.setSelection(searchBar.getText().length());
-
-						}
-					});
-					
-					results.addView(view.HR());
-				}
-
-				for (final Item i : suggestedItems) {
-					List<Rating> L = new LinkedList<Rating>();
-					for(User U : backend.users.values()){
-						if(!U.name.equals("Personal")){
-							L.add(i.ratings.get(U));
-						}
-					}
-					
-					View itemResult = view.SearchResult(
-						i.name,
-						i.ratings.get(new User("Personal")),
-						L
-					);
-
-					results.addView(itemResult);
-
-					itemResult.setOnClickListener(new OnClickListener() {
-						public void onClick(View view) {
-							Intent myIntent = new Intent(that,
-									ItemActivity.class);
-							myIntent.putExtra("upc", i.upc);
-							UserLog.appendLog("Searched for item: " + i.name
-									+ ", upc: " + i.upc);
-							that.startActivityForResult(myIntent, 10);
-						}
-					});
-					
-					
-					
-					
-					
-					
-					results.addView(view.HR());
-
-				}
-
+				
+				
+				refreshList();
 			}
 
 			public void beforeTextChanged(CharSequence s, int start, int count,
@@ -172,7 +82,98 @@ public class SearchActivity extends Activity {
 		});
 
 	}
-	
+	public void onStart(){
+		super.onStart();
+		refreshList();
+	}
+	public void refreshList(){
+		ArrayList<Item> suggestedItems = backend
+				.getSuggestedItems(searchBar.getText().toString());
+		ArrayList<Tag> suggestedTags = backend
+				.getSuggestedTags(searchBar.getText().toString());
+
+		results.removeAllViews();
+
+		for (int i = 0; i < 2; i++) {
+			if (i >= suggestedTags.size())
+				break;
+			final Tag t = suggestedTags.get(i);
+			
+			List<Rating> L = new LinkedList<Rating>();
+			for(User U : backend.users.values()){
+				if(!U.name.equals("Personal")){
+					L.add(t.ratings.get(U));
+				}							
+			}
+			
+			View itemResult = view.SearchResult(
+				t.name,
+				t.ratings.get(new User("Personal")),
+				L
+			);
+
+			results.addView(itemResult);
+
+			itemResult.setOnClickListener(new OnClickListener() {
+				public void onClick(View view) {
+					String s = searchBar.getText().toString();
+					String result = "";
+					if (-1 != s.lastIndexOf(' ')) {
+						s = s.substring(0, s.lastIndexOf(' '));
+						String[] tokens = s.split(" ");
+						for (String name : tokens) {
+							if (!name.equals(""))
+								result += name + " ";
+						}
+					}
+
+					// be aware this code is copied from
+					// Backend.parseTags as a quick fix (may not be
+					// bug free)
+
+					UserLog.appendLog("Clicked on tag: " + t.name);
+					searchBar.setText(result + t.name + " ");
+					//thatt.afterTextChanged(null);
+					searchBar
+							.setSelection(searchBar.getText().length());
+
+				}
+			});
+			
+			results.addView(view.HR());
+		}
+
+		for (final Item i : suggestedItems) {
+			List<Rating> L = new LinkedList<Rating>();
+			for(User U : backend.users.values()){
+				if(!U.name.equals("Personal")){
+					L.add(i.ratings.get(U));
+				}
+			}
+			
+			View itemResult = view.SearchResult(
+				i.name,
+				i.ratings.get(new User("Personal")),
+				L
+			);
+
+			results.addView(itemResult);
+			final Activity that = this;
+			itemResult.setOnClickListener(new OnClickListener() {
+				public void onClick(View view) {
+					Intent myIntent = new Intent(that,
+							ItemActivity.class);
+					myIntent.putExtra("upc", i.upc);
+					UserLog.appendLog("Searched for item: " + i.name
+							+ ", upc: " + i.upc);
+					that.startActivityForResult(myIntent, 10);
+				}
+			});
+			
+			results.addView(view.HR());
+
+		}
+	}
 	@Override
 	public void onPause(){
 		try {
