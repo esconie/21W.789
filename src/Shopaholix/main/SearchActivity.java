@@ -12,6 +12,8 @@ import Shopaholix.database.ItemRatings.Rating;
 import Shopaholix.database.Tag;
 import Shopaholix.database.User;
 import Shopaholix.database.UserLog;
+import Shopaholix.scanning.IntentIntegrator;
+import Shopaholix.scanning.IntentResult;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -76,12 +78,34 @@ public class SearchActivity extends Activity {
 
 		scanButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				
-				
+				Intent intent = new Intent(
+						"com.google.zxing.client.android.SCAN");
+				intent.putExtra("SCAN_MODE", "PRODUCT_MODE");
+				intent.putExtra("SCAN_WIDTH", 400);
+				intent.putExtra("SCAN_HEIGHT", 400);
+				intent.putExtra("RESULT_DISPLAY_DURATION_MS", 3000L);
+				intent.putExtra("PROMPT_MESSAGE", "Scanning for UPC Code");
+				startActivityForResult(intent, IntentIntegrator.REQUEST_CODE);		
 			}
 		});
 
 	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		IntentResult result = IntentIntegrator.parseActivityResult(requestCode,
+				resultCode, intent);
+		if (result != null) {
+			String contents = result.getContents();
+			if (contents != null) {
+				Intent ItemIntent = new Intent(this, ItemActivity.class);
+				ItemIntent.putExtra("upc", contents);
+				UserLog.appendLog("Scanned for upc: " + contents);
+				startActivityForResult(ItemIntent, 10);
+			}
+		}
+	}
+	
 	public void onStart(){
 		super.onStart();
 		refreshList();
