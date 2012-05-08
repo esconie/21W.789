@@ -43,7 +43,7 @@ public class ItemActivity extends Activity {
 	RadioButton redDown;
 	ImageView itempic;
 	ItemView view;
-	
+	View aview;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -88,12 +88,15 @@ public class ItemActivity extends Activity {
 			}
 		});
 		Rating myRating = I.ratings.get(new User("Personal"));
-		setContentView(view.render(itempic, greenUp, yellowMid, redDown,
-				I.name, myRating, this.getApplicationContext(), I));
+		aview = view.render(itempic, greenUp, yellowMid, redDown,
+				I.name, myRating, this.getApplicationContext(), I);
+		setContentView(aview);
 		new DownloadWebPageTask().execute(I.url);
 	}
 	public void onStart(){
 		super.onStart();
+		Rating myRating = I.ratings.get(new User("Personal"));
+		aview.invalidate();
 		
 	}
 	private class DownloadWebPageTask extends AsyncTask<String, Void, Bitmap> {
