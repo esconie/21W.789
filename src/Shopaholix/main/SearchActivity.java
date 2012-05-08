@@ -76,8 +76,8 @@ public class SearchActivity extends Activity {
 
 		scanButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				Intent myIntent = new Intent(that, ScanActivity.class);
-				that.startActivityForResult(myIntent, 10);
+				
+				
 			}
 		});
 
