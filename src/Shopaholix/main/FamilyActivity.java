@@ -50,7 +50,7 @@ public class FamilyActivity extends Activity implements OnEditorActionListener{
         searchBar = view.EditText();
         searchBar.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         familyList = view.VerticalLayout();
-        setContentView(view.render(searchBar, familyList));
+        setContentView(view.render(searchBar, familyList));  
         
         searchBar.setOnEditorActionListener(this);
         refreshList();

@@ -42,7 +42,8 @@ public class ItemActivity extends Activity {
 	RadioButton yellowMid;
 	RadioButton redDown;
 	ImageView itempic;
-
+	ItemView view;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,8 +58,8 @@ public class ItemActivity extends Activity {
 		}
 		UserLog.appendLog("Viewing Item Screen for item: " + I.name + ", upc: "
 				+ I.upc);
-		Rating myRating = I.ratings.get(new User("Personal"));
-		ItemView view = new ItemView(this);
+		
+		view = new ItemView(this);
 		itempic = view.ImageView();
 		greenUp = view.RadioButton();
 		greenUp.setOnClickListener(new OnClickListener() {
@@ -86,12 +87,15 @@ public class ItemActivity extends Activity {
 						+ ", upc: " + I.upc);
 			}
 		});
-
+		Rating myRating = I.ratings.get(new User("Personal"));
 		setContentView(view.render(itempic, greenUp, yellowMid, redDown,
 				I.name, myRating, this.getApplicationContext(), I));
 		new DownloadWebPageTask().execute(I.url);
 	}
-
+	public void onStart(){
+		super.onStart();
+		
+	}
 	private class DownloadWebPageTask extends AsyncTask<String, Void, Bitmap> {
 		@Override
 		protected Bitmap doInBackground(String... urls) {
