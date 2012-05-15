@@ -302,7 +302,12 @@ public class Backend implements Serializable {
 	}
 
 	public void rateFamilyItem(String UPC, User user, Rating rating) {
-		items.get(UPC).ratings.put(user, rating);
+		if (items.containsKey(UPC)) {
+			items.get(UPC).ratings.put(user, rating);
+		} else {
+			items.put(UPC, UPCDatabase.lookupByUPC(UPC));
+			items.get(UPC).ratings.put(user, rating);
+		}
 	}
 
 	public void addFamilyMember(User user, String id) {
